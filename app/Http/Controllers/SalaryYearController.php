@@ -209,7 +209,8 @@ class SalaryYearController extends Controller
             $skill_alw = isset($input['skill_alw'][$key]) ? (int) str_replace(',', '', $input['skill_alw'][$key]) : 0;
             $adjustment = isset($input['adjustment'][$key]) ? (int) str_replace(',', '', $input['adjustment'][$key]) : 0;
 
-            $total = $rate_salary + $ability + $family_alw;
+            // $total = $rate_salary + $ability + $family_alw;
+            $total = $rate_salary + $ability + $family_alw + $skill_alw;
 
             if ($total > 12000000) {
                 $bpjs = 12000000 * 0.01;
@@ -329,12 +330,13 @@ class SalaryYearController extends Controller
             $skill_alw = $request->has('skill_alw.' . $id) ? (int) str_replace(',', '', $request->input('skill_alw.' . $id)) : 0;
             $adjustment = $request->has('adjustment.' . $id) ? (int) str_replace(',', '', $request->input('adjustment.' . $id)) : 0;
 
-            $total = $rate_salary + $ability + $family_alw;
+            $totalBpjs = $rate_salary + $ability + $family_alw;
+            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw;
 
-            if ($total > 12000000) {
+            if ($totalBpjs > 12000000) {
                 $bpjs = 12000000 * 0.01;
             } else {
-                $bpjs = $total * 0.01;
+                $bpjs = $totalBpjs * 0.01;
             }
 
             // $total = $rate_salary + $ability + $fungtional_alw + $family_alw + $transport_alw + $telephone_alw + $skill_alw;
@@ -347,11 +349,11 @@ class SalaryYearController extends Controller
             // dd($total, $total2, $bpjs, $bpjs2);
 
 
-            $jamsostek = $total * 0.02;
+            $jamsostek = $totalJamsostek * 0.02;
 
-            $jamsostek_jkk = $total * 0.0054;
-            $jamsostek_tk = $total * 0.003;
-            $jamsostek_tht = $total * 0.037;
+            $jamsostek_jkk = $totalJamsostek * 0.0054;
+            $jamsostek_tk = $totalJamsostek * 0.003;
+            $jamsostek_tht = $totalJamsostek * 0.037;
             $total_jamsostek = $jamsostek_jkk + $jamsostek_tk + $jamsostek_tht;
 
             $allocations = $request->input('allocations')[$id] ?? NULL;
