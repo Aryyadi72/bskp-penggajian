@@ -849,6 +849,7 @@ class SalaryController extends Controller
     $statuses = User::distinct('status')->pluck('status')->toArray();
 
     $currentYear = Carbon::now()->year;
+    $notCurrentMonth = Carbon::now()->subMonth()->month;
 
     $rawData = DB::table('salary_months')
         ->join('salary_years', 'salary_months.id_salary_year', 'salary_years.id')
@@ -868,7 +869,10 @@ class SalaryController extends Controller
             DB::raw('MONTH(salary_months.date) as month')
         )
         ->whereYear('salary_months.date', $currentYear)
+        ->whereMonth('salary_months.date', $notCurrentMonth)
         ->get();
+
+        // dd($rawData);
 
     $rawData->transform(function ($item) {
         $phone = preg_replace('/[^0-9]/', '', $item->no_telpon);
