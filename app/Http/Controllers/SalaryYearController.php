@@ -156,17 +156,17 @@ class SalaryYearController extends Controller
                     ->where('users.status', $selectedStatus)
                     ->where('salary_years.year', $currentYear)
                     ->where('users.active', 'yes')
-                    // ->where(function ($query) {
-                    //     $query->where('salary_years.ability', 0)
-                    //         ->orWhere('salary_years.fungtional_alw', 0)
-                    //         ->orWhere('salary_years.family_alw', 0)
-                    //         ->orWhere('salary_years.transport_alw', 0)
-                    //         ->orWhere('salary_years.telephone_alw', 0)
-                    //         ->orWhere('salary_years.skill_alw', 0)
-                    //         ->orWhere('salary_years.adjustment', 0)
-                    //         ->orWhere('salary_years.bpjs', 0)
-                    //         ->orWhere('salary_years.jamsostek', 0);
-                    // })
+                    ->where(function ($query) {
+                        $query->where('salary_years.ability', 0)
+                            ->orWhere('salary_years.fungtional_alw', 0)
+                            ->orWhere('salary_years.family_alw', 0)
+                            ->orWhere('salary_years.transport_alw', 0)
+                            ->orWhere('salary_years.telephone_alw', 0)
+                            ->orWhere('salary_years.skill_alw', 0)
+                            ->orWhere('salary_years.adjustment', 0)
+                            ->orWhere('salary_years.bpjs', 0)
+                            ->orWhere('salary_years.jamsostek', 0);
+                    })
                     ->select('users.*', 'salary_years.*', 'grade.*', 'users.nik as id_user', 'grade.id as id_grade')
                     ->get();
             } else {

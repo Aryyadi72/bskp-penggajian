@@ -23,12 +23,23 @@
                         @csrf
                         <div class="card-body p-3 pb-2">
                             <div class="row">
-                                <div class="col-7">
-                                    <button data-bs-toggle="modal" data-bs-target="#sendData"
+                                {{-- <button data-bs-toggle="modal" data-bs-target="#sendData"
                                         class="btn btn-icon btn-3 btn-success btn-sm">
                                         <span class="btn-inner--icon"><i class="material-icons">share</i></span>
                                         <span class="btn-inner--text">Send Salary Slip</span>
-                                    </button>
+                                    </button> --}}
+                                <div class="col-2">
+                                    <select class="form-select form-select-sm" name="filter_month">
+                                        <option selected disabled>Select Month</option>
+                                        @foreach ($months_filter as $month)
+                                            <option value="{{ $month['value'] }}"
+                                                {{ $selectedMonth == $month['value'] ? 'selected' : '' }}>
+                                                {{ $month['label'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-auto">
                                     <button class="btn btn-icon btn-3 btn-primary btn-sm">
                                         <span class="btn-inner--icon"><i class="material-icons">mail</i></span>
                                         <span class="btn-inner--text">Send Selected</span>
@@ -74,7 +85,7 @@
                                             <tr>
                                                 <td class="text-center">
                                                     <input type="checkbox" name="salary_ids[]"
-                                                        value="{{ $user->salary_month_id }}" class="selectItem"
+                                                        value="{{ $user->salary_year_id }}" class="selectItem"
                                                         onclick="togglePrintButton()">
                                                 </td>
                                                 <td class="text-center">{{ $loop->iteration }}</td>

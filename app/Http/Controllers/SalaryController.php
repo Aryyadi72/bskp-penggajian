@@ -846,6 +846,8 @@ class SalaryController extends Controller
         ];
     })->unique()->toArray();
 
+    $selectedMonth = trim(request()->input('filter_month', ''));
+
     $statuses = User::distinct('status')->pluck('status')->toArray();
 
     $currentYear = Carbon::now()->year;
@@ -862,6 +864,7 @@ class SalaryController extends Controller
             'users.dept',
             'users.jabatan',
             'users.status',
+            'salary_years.id as salary_year_id',
             'salary_years.year',
             'salary_months.id as salary_month_id',
             'salary_months.is_send',
@@ -869,7 +872,7 @@ class SalaryController extends Controller
             DB::raw('MONTH(salary_months.date) as month')
         )
         ->whereYear('salary_months.date', $currentYear)
-        ->whereMonth('salary_months.date', $notCurrentMonth)
+        // ->whereMonth('salary_months.date', $notCurrentMonth)
         ->get();
 
         // dd($rawData);
@@ -900,20 +903,23 @@ class SalaryController extends Controller
         'months' => $months,
         'statuses' => $statuses,
         'title' => $title,
-        'data' => $groupedData
+        'data' => $groupedData,
+        'selectedMonth' => $selectedMonth
     ]);
     }
 
     public function send_checked(Request $request)
     {
         $selectedIds = $request->input('salary_ids');
+        $months = $request->input('filter_month');
 
         $query = DB::table('salary_months')
             ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
             ->join('users', 'users.nik', '=', 'salary_years.nik')
             ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
             ->select('users.name as nama', 'users.nik', 'users.id as id_users', 'users.no_telpon', 'salary_months.id as salary_month_id', 'salary_months.date as salary_month_date')
-            ->whereIn('salary_months.id', $selectedIds)
+            ->whereIn('salary_years.id', $selectedIds)
+            ->whereMonth('salary_months.date', $months)
             ->get();
 
             foreach($query as $data) {
@@ -937,7 +943,6 @@ class SalaryController extends Controller
                     ->where('salary_months.id', $id)
                     ->first();
 
-                // dd($sal);
                 // $sal = SalaryMonth::find($id);
 
                 // dd($sal, $sal->salary_year->nik);
