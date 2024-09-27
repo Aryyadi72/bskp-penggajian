@@ -123,32 +123,45 @@ class SalaryYearController extends Controller
             ->where('users.status', $selectedStatus)
             ->first();
 
-        // dd($checkStatus != null, !$checkYear);
+        // dd($checkStatus, $checkYear, $selectedStatus);
 
         if ($checkStatus != null) {
             if ($checkYear) {
 
-                // $global = DB::table('users')
-                //     ->join('salary_years', 'salary_years.nik', '=', 'users.nik')
-                //     ->where('users.status', $selectedStatus)
-                //     ->pluck('users.nik');
+                $global = DB::table('users')
+                    ->join('salary_years', 'salary_years.nik', '=', 'users.nik')
+                    ->where('users.status', $selectedStatus)
+                    ->pluck('users.nik');
 
-                // $remainingUsers = DB::table('users')
-                //     ->join('grade', 'users.grade', 'grade.name_grade')
-                //     ->select('users.nik as user_id', 'grade.name_grade as salary_grade_id')
-                //     ->whereNotIn('users.nik', $global)
-                //     ->where('users.status', $selectedStatus)
-                //     ->get();
+                $remainingUsers = DB::table('users')
+                    ->join('grade', 'users.grade', 'grade.name_grade')
+                    ->select('users.nik as user_id', 'grade.id as salary_grade_id')
+                    ->whereNotIn('users.nik', $global)
+                    ->where('users.status', $selectedStatus)
+                    ->where('users.active', 'yes')
+                    ->get();
 
-                //     foreach ($remainingUsers as $g) {
-                //         SalaryYear::create([
-                //             'nik' => $g->user_id,
-                //             'id_salary_grade' => $g->salary_grade_id,
-                //             'date' => $currentDate,
-                //             'year' => $currentYear,
-                //             'used' => '1'
-                //         ]);
-                //     }
+                    foreach ($remainingUsers as $g) {
+                        // SalaryYear::create([
+                        //     'nik' => $g->user_id,
+                        //     'id_salary_grade' => $g->salary_grade_id,
+                        //     'date' => $currentDate,
+                        //     'year' => $currentYear,
+                        //     'used' => '1'
+                        // ]);
+
+                        SalaryYear::firstOrCreate(
+                            [
+                                'nik' => $g->user_id,
+                                'year' => $currentYear
+                            ],
+                            [
+                                'id_salary_grade' => $g->salary_grade_id,
+                                'date' => $currentDate,
+                                'used' => '1'
+                            ]
+                        );
+                    }
 
                 $users = DB::table('users')
                     ->join('grade', 'users.grade', '=', 'grade.name_grade')
@@ -156,17 +169,17 @@ class SalaryYearController extends Controller
                     ->where('users.status', $selectedStatus)
                     ->where('salary_years.year', $currentYear)
                     ->where('users.active', 'yes')
-                    ->where(function ($query) {
-                        $query->where('salary_years.ability', 0)
-                            ->orWhere('salary_years.fungtional_alw', 0)
-                            ->orWhere('salary_years.family_alw', 0)
-                            ->orWhere('salary_years.transport_alw', 0)
-                            ->orWhere('salary_years.telephone_alw', 0)
-                            ->orWhere('salary_years.skill_alw', 0)
-                            ->orWhere('salary_years.adjustment', 0)
-                            ->orWhere('salary_years.bpjs', 0)
-                            ->orWhere('salary_years.jamsostek', 0);
-                    })
+                    // ->where(function ($query) {
+                    //     $query->where('salary_years.ability', 0)
+                    //         ->orWhere('salary_years.fungtional_alw', 0)
+                    //         ->orWhere('salary_years.family_alw', 0)
+                    //         ->orWhere('salary_years.transport_alw', 0)
+                    //         ->orWhere('salary_years.telephone_alw', 0)
+                    //         ->orWhere('salary_years.skill_alw', 0)
+                    //         ->orWhere('salary_years.adjustment', 0)
+                    //         ->orWhere('salary_years.bpjs', 0)
+                    //         ->orWhere('salary_years.jamsostek', 0);
+                    // })
                     ->select('users.*', 'salary_years.*', 'grade.*', 'users.nik as id_user', 'grade.id as id_grade')
                     ->get();
             } else {
@@ -210,18 +223,19 @@ class SalaryYearController extends Controller
             $adjustment = isset($input['adjustment'][$key]) ? (int) str_replace(',', '', $input['adjustment'][$key]) : 0;
 
             // $total = $rate_salary + $ability + $family_alw;
-            $total = $rate_salary + $ability + $family_alw + $skill_alw;
+            $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw;
+            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw;
 
-            if ($total > 12000000) {
+            if ($totalBpjs > 12000000) {
                 $bpjs = 12000000 * 0.01;
             } else {
-                $bpjs = $total * 0.01;
+                $bpjs = $totalBpjs * 0.01;
             }
-            $jamsostek = $total * 0.02;
+            $jamsostek = $totalJamsostek * 0.02;
 
-            $jamsostek_jkk = $total * 0.0054;
-            $jamsostek_tk = $total * 0.003;
-            $jamsostek_tht = $total * 0.037;
+            $jamsostek_jkk = $totalJamsostek * 0.0054;
+            $jamsostek_tk = $totalJamsostek * 0.003;
+            $jamsostek_tht = $totalJamsostek * 0.037;
             $total_jamsostek = $jamsostek_jkk + $jamsostek_tk + $jamsostek_tht;
 
             $allocations = $request->input('allocation')[$key] ?? NULL;
@@ -330,8 +344,8 @@ class SalaryYearController extends Controller
             $skill_alw = $request->has('skill_alw.' . $id) ? (int) str_replace(',', '', $request->input('skill_alw.' . $id)) : 0;
             $adjustment = $request->has('adjustment.' . $id) ? (int) str_replace(',', '', $request->input('adjustment.' . $id)) : 0;
 
-            $totalBpjs = $rate_salary + $ability + $family_alw;
-            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw;
+            $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw;
+            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw;
 
             if ($totalBpjs > 12000000) {
                 $bpjs = 12000000 * 0.01;

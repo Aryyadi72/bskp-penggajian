@@ -52,6 +52,7 @@ class SalaryMonthImport implements ToModel, WithHeadingRow
 
         $gross_sal = $rateSalary + $ability + $fungtional_alw + $family_alw + $transport_alw + $skill_alw + $telephone_alw +
                     $adjustment + $total_overtime + $thr + $bonus + $incentive;
+
         $total = $rateSalary + $ability + $family_alw;
 
         $bpjs = ($total > 12000000) ? 12000000 * 0.01 : $total * 0.01;
@@ -62,10 +63,14 @@ class SalaryMonthImport implements ToModel, WithHeadingRow
         // Hitung total deduction
         $total_deduction = $bpjs + $jamsostek + $union + $absent + $electricity + $cooperative + $pinjaman + $other;
 
+        $gaji_bersih = $gross_sal - ($bpjs + $jamsostek + $union + $absent + $electricity + $pinjaman + $other);
+
+        $net_salary = $gaji_bersih - $cooperative;
+
         // dd($gross_sal, $bpjs, $jamsostek, $total_ben, $total_deduction, $total);
 
         // Hitung net salary
-        $net_salary = $gross_sal - $total_deduction;
+        // $net_salary = $gross_sal - $total_deduction;
 
         return SalaryMonth::updateOrCreate(
             [

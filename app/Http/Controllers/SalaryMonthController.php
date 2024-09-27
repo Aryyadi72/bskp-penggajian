@@ -135,30 +135,32 @@ class SalaryMonthController extends Controller
             ->where('users.status', $statusFilter)
             ->first();
 
-        //     dd($checkYear, $checkMonth, $checkStatus);
+        // dd($checkYear, $checkMonth, $checkStatus, $statusFilter);
 
-        // $global = DB::table('salary_years')
-        //     ->join('users', 'salary_years.nik', '=', 'users.nik')
-        //     ->select('salary_years.id as salary_years_id')
-        //     ->where('users.status', $statusFilter)
-        //     ->get();
+        $global = DB::table('salary_years')
+            ->join('users', 'salary_years.nik', '=', 'users.nik')
+            ->select('salary_years.id as salary_years_id')
+            ->where('users.status', $statusFilter)
+            ->get();
 
-        // foreach ($global as $g) {
-        //     SalaryMonth::create([
-        //         'id_salary_year' =>$g->salary_years_id,
-        //         'date' => $yearFilter . '-' . $monthFilter . '-13',
-        //     ]);
-        // }
+        foreach ($global as $g) {
+            SalaryMonth::firstOrCreate([
+                'id_salary_year' =>$g->salary_years_id,
+                'date' => $yearFilter . '-' . $monthFilter . '-13',
+            ]);
+        }
 
-        // $data = DB::table('users')
-        //     ->join('grade', 'users.grade', '=', 'grade.name_grade')
-        //     ->join('salary_years', 'salary_years.nik', '=', 'users.nik')
-        //     ->join('salary_months', 'salary_months.id_salary_year', '=', 'salary_years.id')
-        //     ->where('users.active', 'yes')
-        //     ->where('users.status', $statusFilter)
-        //     ->whereMonth('salary_months.date', $monthFilter)
-        //     ->select('users.*', 'grade.*', 'users.nik as id_user', 'salary_years.id as id_salary_year', 'grade.id as id_grade', 'salary_years.*')
-        //     ->get();
+        $data = DB::table('users')
+            ->join('grade', 'users.grade', '=', 'grade.name_grade')
+            ->join('salary_years', 'salary_years.nik', '=', 'users.nik')
+            ->join('salary_months', 'salary_months.id_salary_year', '=', 'salary_years.id')
+            ->where('users.active', 'yes')
+            ->where('users.status', $statusFilter)
+            ->whereMonth('salary_months.date', $monthFilter)
+            ->select('users.*', 'grade.*', 'users.nik as id_user', 'salary_years.id as id_salary_year', 'grade.id as id_grade', 'salary_years.*')
+            ->get();
+
+        // dd($data);
 
         if ($checkStatus != null) {
             if ($checkYear != null && $checkMonth != null) {
@@ -172,6 +174,8 @@ class SalaryMonthController extends Controller
                     ->whereMonth('salary_months.date', $monthFilter)
                     ->where('users.active', 'yes')
                     ->get();
+
+                    dd($data);
 
             } elseif ($checkYear != null && $checkMonth == null) {
 
@@ -412,7 +416,16 @@ class SalaryMonthController extends Controller
 
             $total_deduction = $bpjs + $jamsostek + $union + $absent + $electricity + $cooperative + $pinjaman + $other;
 
-            $net_salary = $gross_sal - $total_deduction;
+            // dd($bpjs, $jamsostek, $union, $absent, $electricity, $cooperative, $pinjaman, $other);
+
+            $gaji_bersih = $gross_sal - ($bpjs + $jamsostek + $union + $absent + $electricity + $pinjaman + $other);
+
+            // $net_salary = $gross_sal - $total_deduction;
+
+            $net_salary = $gaji_bersih - $cooperative;
+
+            // dd($net_salary);
+
 
             // $allocations = $request->input('allocation.' . $id) ?? NULL;
             // if ($allocations) {
