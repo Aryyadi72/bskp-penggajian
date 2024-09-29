@@ -12,7 +12,7 @@
 
                 <div class="card-body p-3 pb-2">
                     <div class="table-responsive p-0">
-                        <table class="table table-striped table-hover dtTable align-items-center small_tbl compact">
+                        <table class="table table-striped table-hover dtTable2 align-items-center small_tbl compact">
                             <thead class="bg-thead">
                                 <tr>
                                     <th>No</th>

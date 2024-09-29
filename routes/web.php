@@ -121,6 +121,7 @@ Route::get('/list-is-send', [SalaryController::class, 'send_report'])->name('lis
 // Route::post('/is-approved', [SalaryController::class, 'salary_approved'])->name('salary-approved');
 
 Route::get('/salary-monitoring', [SalaryController::class, 'salary_monitoring_index'])->name('salary-monitoring');
+Route::post('/salary-monitoring-approve', [SalaryController::class, 'salary_monitoring_approve'])->name('salary-monitoring-approve');
 // -------------------------------------------------------------------
 
 // OvertimeController
@@ -130,6 +131,15 @@ Route::post('/overtime-approval-store', [OvertimeController::class, 'store'])->n
 
 Route::get('/overtime-summary-index', [OvertimeController::class, 'index_summary'])->name('overtime-summary-index');
 Route::post('/overtime-summary-store', [OvertimeController::class, 'store_summary'])->name('overtime-summary-store');
+
+Route::get('/overtime-master-index', [OvertimeController::class, 'overtime_master_index'])->name('overtime-master-index');
+Route::post('/overtime-master-store', [OvertimeController::class, 'overtime_master_store'])->name('overtime-master-store');
+Route::put('/overtime-master-update/{id}', [OvertimeController::class, 'overtime_master_update'])->name('overtime-master-update');
+Route::delete('/overtime-master-destroy/{id}', [OvertimeController::class, 'overtime_master_destory'])->name('overtime-master-destroy');
+
+Route::get('/overtime-limit-index', [OvertimeController::class, 'overtime_limit_index'])->name('overtime-limit-index');
+Route::post('/overtime-limit-store', [OvertimeController::class, 'overtime_limit_store'])->name('overtime-limit-store');
+// Route::get('/overtime-master-index', [OvertimeController::class, 'overtime_master_index'])->name('overtime-master-index');
 // -------------------------------------------------------------------
 
 // UserController

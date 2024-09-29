@@ -94,7 +94,7 @@
                                                 <td>{{ $records->first()->dept }}</td>
                                                 <td>{{ $records->first()->status }}</td>
                                                 <td>{{ $records->first()->jabatan }}</td>
-                                                <td>-</td>
+                                                <td>{{ $records->first()->overtime_limit ?? '0' }} Jam / Bulan</td>
                                                 @foreach ($dates as $date)
                                                     <td class="text-center p-0">
                                                         {{ $records->firstWhere('overtime_date', $date)?->hour_call ?? 0 }}

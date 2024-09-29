@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OvertimeApproved;
-use App\Models\SalaryMonth;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+
 use Carbon\Carbon;
-use App\Models\User;
 use DB;
+
+use App\Models\OvertimeApproved;
+use App\Models\SalaryMonth;
+use App\Models\User;
+use App\Models\OvertimeMaster;
 
 class OvertimeController extends Controller
 {
@@ -99,7 +103,7 @@ class OvertimeController extends Controller
                 ->join('users', 'users.nik', '=', 'test_absen_regs.user_id')
                 ->join('salary_years', 'salary_years.nik', '=', 'test_absen_regs.user_id')
                 ->join('grade', 'grade.id', '=', 'salary_years.id_salary_grade')
-                ->leftJoin('overtime_approveds', function($join) use ($dateYesterday) {
+                ->leftJoin('overtime_approveds', function ($join) use ($dateYesterday) {
                     $join->on('overtime_approveds.nik', '=', 'test_absen_regs.user_id')
                         ->where('overtime_approveds.overtime_date', '=', $dateYesterday);
                 })
@@ -131,7 +135,7 @@ class OvertimeController extends Controller
                 ->join('users', 'users.nik', '=', 'test_absen_regs.user_id')
                 ->join('salary_years', 'salary_years.nik', '=', 'test_absen_regs.user_id')
                 ->join('grade', 'grade.id', '=', 'salary_years.id_salary_grade')
-                ->leftJoin('overtime_approveds', function($join) use ($dateYesterday) {
+                ->leftJoin('overtime_approveds', function ($join) use ($dateYesterday) {
                     $join->on('overtime_approveds.nik', '=', 'test_absen_regs.user_id')
                         ->where('overtime_approveds.overtime_date', '=', $dateYesterday);
                 })
@@ -205,7 +209,7 @@ class OvertimeController extends Controller
 
         $order = ['Manager', 'Staff', 'Monthly', 'Regular', 'Contract FL', 'Contract BSKP'];
 
-        $dataGabunganGrouped = $dataGabunganGrouped->sortBy(function($items, $status) use ($order) {
+        $dataGabunganGrouped = $dataGabunganGrouped->sortBy(function ($items, $status) use ($order) {
             return array_search($status, $order);
         });
 
@@ -239,6 +243,7 @@ class OvertimeController extends Controller
                 'users.dept',
                 'users.status',
                 'users.jabatan',
+                'users.overtime_limit',
                 'overtime_approveds.overtime_date',
                 'overtime_approveds.hour_call',
                 'salary_years.ability',
@@ -325,6 +330,88 @@ class OvertimeController extends Controller
         }
 
         return redirect()->back()->with('success', 'Data updated successfully!');
+    }
+
+    public function overtime_master_index()
+    {
+        $title = "Overtime Matrix Data";
+        $data = OvertimeMaster::all();
+
+        return view('overtime.index-master', compact('data', 'title'));
+    }
+
+    public function overtime_master_store(Request $request)
+    {
+        $OvertimeMin = $request->overtime_min;
+        $OvertimeMax = $request->overtime_max;
+        $OvertimeValue = $request->overtime_value;
+
+        OvertimeMaster::create([
+            'overtime_min' => $OvertimeMin,
+            'overtime_max' => $OvertimeMax,
+            'overtime_value' => $OvertimeValue,
+        ]);
+
+        return redirect()->route('overtime-master-index');
+    }
+
+    public function overtime_master_update($id)
+    {
+        $overtimeMatrix = OvertimeMaster::find($id);
+        $overtimeMatrix->update([
+            'overtime_min' => request()->overtime_min,
+            'overtime_max' => request()->overtime_max,
+            'overtime_value' => request()->overtime_value,
+        ]);
+
+        return redirect()->route('overtime-master-index');
+    }
+
+    public function overtime_master_destory($id)
+    {
+        $overtimeMatrix = OvertimeMaster::find($id);
+
+        $overtimeMatrix->delete();
+
+        return redirect()->route('overtime-master-index');
+    }
+
+    public function overtime_limit_index()
+    {
+        $title = "Overtime Limits";
+
+        $statuses = User::distinct('status')->pluck('status')->toArray();
+        $selectedStatus = trim(request()->input('filter_status', ''));
+
+        if ($selectedStatus == null) {
+            $data = User::where('active', 'yes')->get();
+        } else {
+            $data = User::where('active', 'yes')->where('status', $selectedStatus)->get();
+        }
+
+        return view('overtime.index-limit', compact('statuses', 'data', 'title'));
+    }
+
+    public function overtime_limit_store(Request $request)
+    {
+        $request->validate([
+            'nik' => 'required|array',
+            'overtime_limit' => 'required|array',
+            'overtime_limit.*' => 'nullable|numeric|min:0',
+        ]);
+
+        foreach ($request->nik as $index => $nik) {
+            $employee = User::where('nik', $nik)->first();
+
+            if ($employee) {
+                User::updateOrCreate(
+                    ['nik' => $employee->nik],
+                    ['overtime_limit' => $request->overtime_limit[$index]]
+                );
+            }
+        }
+
+        return redirect()->route('overtime-limit-index')->with('success', 'Overtime limits updated successfully!');
     }
 
 }

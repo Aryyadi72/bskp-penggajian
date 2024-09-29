@@ -54,6 +54,7 @@ class User extends Authenticatable
         'image_url',
         'role_app',
         'active',
+        'overtime_limit',
         'email_verified_at',
         'password',
     ];
