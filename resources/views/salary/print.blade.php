@@ -6,9 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        SAL_{{ date('My', strtotime($sal->salary_month_date)) }}_{{ $sal->nik }}_{{ $sal->name }}
+        SAL_{{ date('My', strtotime($sal->salary_months_date)) }}_{{ $sal->Emp_Code }}_{{ $sal->Nama }}
     </title>
-
 
     <!-- CSS Files -->
     {{-- <link id="pagestyle" href="{{ public_path ('assets/libs/bootstrap5/css/bootstrap.min.css') }}" rel="stylesheet" /> --}}
@@ -85,7 +84,7 @@
             </tr>
             <tr>
                 <td>Bentok Darat, Bati-Bati, Kab.Tanah Laut</td>
-                <td align="right" class="uppercase">SALARY PAYMENT {{ date('F Y', strtotime($sal->salary_month_date)) }}
+                <td align="right" class="uppercase">SALARY PAYMENT {{ date('F Y', strtotime($sal->salary_months_date)) }}
                 </td>
             </tr>
             <tr>
@@ -105,19 +104,15 @@
                     <table class="tb-detail">
                         <tr>
                             <td>Employe Code </td>
-                            <td> : {{ $sal->nik }}</td>
+                            <td> : {{ $sal->Emp_Code }}</td>
                         </tr>
                         <tr>
                             <td>Employe Name</td>
-                            <td>: {{ $sal->name }}</td>
+                            <td>: {{ $sal->Nama }}</td>
                         </tr>
                         <tr>
                             <td>Grade</td>
-                            <td>: {{ $sal->name_grade }}</td>
-                        </tr>
-                        <tr>
-                            <td>Status</td>
-                            <td>: {{ $sal->status }}</td>
+                            <td>: {{ $sal->Grade }}</td>
                         </tr>
                     </table>
                 </td>
@@ -126,19 +121,15 @@
                     <table class="tb-detail">
                         <tr>
                             <td>Departement</td>
-                            <td>: {{ $sal->dept }}</td>
+                            <td>: {{ $sal->Dept }}</td>
                         </tr>
                         <tr>
                             <td>Job</td>
-                            <td>: {{ $sal->jabatan }}</td>
+                            <td>: {{ $sal->Jabatan }}</td>
                         </tr>
                         <tr>
-                            <td>Start working</td>
-                            <td>: {{ date('H:i', strtotime($sal->start_work_user)) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Tax Number</td>
-                            <td>: -</td>
+                            <td>Status</td>
+                            <td>: {{ $sal->Status }}</td>
                         </tr>
                     </table>
                 </td>
@@ -244,6 +235,11 @@
                             <td colspan="3"><u><b>B. DEDUCTION</b></u></td>
                         </tr>
                         <tr>
+                            <td>Pinjaman</td>
+                            <td>:</td>
+                            <td class="text-end">{{ number_format($sal->pinjaman, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
                             <td>BPJS</td>
                             <td>:</td>
                             <td class="text-end">{{ number_format($sal->bpjs, 0, ',', '.') }}</td>
@@ -272,6 +268,11 @@
                             <td>Cooperative</td>
                             <td>:</td>
                             <td class="text-end">{{ number_format($sal->cooperative, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Other</td>
+                            <td>:</td>
+                            <td class="text-end">{{ number_format($sal->other, 0, ',', '.') }}</td>
                         </tr>
                         <tr class="top-border">
                             <td><b>Sub Total</b></td>
@@ -310,14 +311,14 @@
                             <td>Tax PPh 21</td>
                             <td>:</td>
                             {{-- <td class="text-end">{{ number_format($sal->pph21_ben, 0, ',', '.') }}</td> --}}
-                            <td class="text-end"></td>
+                            <td class="text-end">0</td>
                         </tr>
                         <tr class="top-border">
                             <td><b>Sub Total</b></td>
                             <td>:</td>
-                            {{-- <td class="text-end"><b>
+                            <td class="text-end"><b>
                                     {{ number_format($sal->total_ben, 0, ',', '.') }}</b>
-                            </td> --}}
+                            </td>
                             <td class="text-end"><b></b></td>
                         </tr>
                     </table>
@@ -346,8 +347,7 @@
                         <tr>
                             <td>Tax PPh 21</td>
                             <td>:</td>
-                            {{-- <td class="text-end">{{ number_format($sal->pph21_deb, 0, ',', '.') }}</td> --}}
-                            <td class="text-end"></td>
+                            <td class="text-end">0</td>
                         </tr>
                         <tr class="top-border">
                             <td><b>Sub Total</b></td>
@@ -402,7 +402,7 @@
                     <td>
                         Receive by
                         <br><br><br>
-                        {{ $sal->name }}
+                        {{ $sal->Nama }}
                     </td>
                     <td style="vertical-align: top">generate by system - no signature is required</td>
                 </tr>

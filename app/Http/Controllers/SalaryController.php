@@ -14,6 +14,7 @@ use PDF;
 use Twilio\Rest\Client;
 use WaAPI\WaAPI;
 use Illuminate\Support\Str;
+use App\Jobs\SendCheckedSalaryJob;
 
 class SalaryController extends Controller
 {
@@ -443,7 +444,10 @@ class SalaryController extends Controller
             ->where('salary_months.id', $id)
             ->first();
 
-        $date = date('My', strtotime($sal->salary_months_date));
+
+            $date = date('My', strtotime($sal->salary_months_date));
+
+            // dd(vars: $sal->salary_month_date);
 
         if (!$sal) {
             dd("Salary with ID $id not found.");
@@ -1052,91 +1056,134 @@ class SalaryController extends Controller
         ]);
     }
 
+    // public function send_checked(Request $request)
+    // {
+    //     $selectedIds = $request->input('salary_ids');
+    //     $months = $request->input('filter_month');
+
+    //     $query = DB::table('salary_months')
+    //         ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
+    //         ->join('users', 'users.nik', '=', 'salary_years.nik')
+    //         ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
+    //         ->select('users.name as nama', 'users.nik', 'users.id as id_users', 'users.no_telpon', 'salary_months.id as salary_month_id', 'salary_months.date as salary_month_date')
+    //         ->whereIn('salary_years.id', $selectedIds)
+    //         ->whereMonth('salary_months.date', $months)
+    //         ->get();
+
+    //     foreach ($query as $data) {
+    //         $days = Carbon::now()->subMonth(1)->format('mY');
+    //         $dayss = Carbon::now();
+    //         $day = ($dayss->hour < 12) ? "Pagi" : "Siang";
+
+    //         $name = $data->nama;
+    //         $month = Carbon::parse($data->salary_month_date)->format('F');
+
+    //         $customFileNames = $data->nik . $days . $data->salary_month_id;
+    //         $customFileName = Str::of($customFileNames)->toBase64();
+    //         $filePath = storage_path('app/public') . '/' . $customFileName . '.pdf';
+
+    //         $id = $data->salary_month_id;
+
+
+
+    //         // $sal = DB::table('salary_months')
+    //         //     ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
+    //         //     ->join('users', 'users.nik', '=', 'salary_years.nik')
+    //         //     ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
+    //         //     ->select('salary_months.date as salary_month_date', 'salary_months.*', 'salary_years.*', 'users.*', 'grade.*')
+    //         //     ->where('salary_months.id', $id)
+    //         //     ->first();
+
+    //         $sal = DB::table('salary_months')
+    //             ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
+    //             ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
+    //             ->join('users', 'users.nik', '=', 'salary_years.nik')
+    //             ->select(
+    //                 'users.nik as Emp_Code',
+    //                 'users.name as Nama',
+    //                 'users.status as Status',
+    //                 'users.dept as Dept',
+    //                 'users.jabatan as Jabatan',
+    //                 'users.start_work_user',
+    //                 'grade.name_grade as Grade',
+    //                 'grade.rate_salary',
+    //                 'salary_years.*',
+    //                 'salary_months.*',
+    //                 'salary_months.absent',
+    //                 'salary_months.electricity',
+    //                 'salary_months.cooperative',
+    //                 'salary_months.pinjaman',
+    //                 'salary_months.other',
+    //                 'salary_months.date as salary_months_date',
+    //                 'salary_months.total_deduction',
+    //                 'salary_months.net_salary'
+    //             )
+    //             ->where('salary_months.id', $id)
+    //             ->first();
+
+    //         // $sal = SalaryMonth::find($id);
+
+    //         // dd($sal, $sal->salary_year->nik);
+
+    //         if (!$sal) {
+    //             dd("Salary with ID $id not found.");
+    //         }
+
+    //         // $rate_salary = $sal->salary_year->salary_grade->rate_salary;
+    //         // $ability = $sal->salary_year->ability;
+    //         // $fungtional_alw = $sal->salary_year->fungtional_alw;
+    //         // $family_alw = $sal->salary_year->family_alw;
+    //         // $total = $rate_salary + $ability + $fungtional_alw + $family_alw;
+
+    //         $rate_salary = $sal->rate_salary;
+    //         $ability = $sal->ability;
+    //         $fungtional_alw = $sal->fungtional_alw;
+    //         $family_alw = $sal->family_alw;
+    //         $total = $rate_salary + $ability + $fungtional_alw + $family_alw;
+    //         $pdf = PDF::loadView('salary.print', compact('sal', 'total'));
+
+    //         file_put_contents($filePath, $pdf->output());
+
+    //         $mediaUrl = $data->nik . $days . $data->salary_month_id;
+    //         $urls = Str::of($mediaUrl)->toBase64();
+
+    //         // $url = "https://bskp.blog:9000/pdf/" . $urls . ".pdf" . "(This message containt dangerous file, please dont open it!)";
+    //         $url = "This message containt dangerous file, please dont open it!";
+
+    //         $twilio = new Client(env('TWILIO_AUTH_SID'), env('TWILIO_AUTH_TOKEN'));
+
+    //         $is_send = $twilio->messages->create(
+    //             "whatsapp:+" . $data->no_telpon,
+    //             [
+    //                 "contentSid" => env('TWILIO_CONTENT_ID'),
+    //                 "messagingServiceSid" => env('TWILIO_SERVICE_ID'),
+    //                 "from" => "whatsapp:" . env('TWILIO_PHONE_NUMBER'),
+    //                 "contentVariables" => json_encode([
+    //                     "1" => $day,
+    //                     "2" => $name,
+    //                     "3" => $month,
+    //                     "4" => $url,
+    //                 ]),
+    //             ]
+    //         );
+    //     }
+
+    //     if ($is_send) {
+    //         SalaryMonth::where('id', $id)->update(['is_send' => '1']);
+    //     }
+
+    //     return redirect()->back();
+    // }
+
     public function send_checked(Request $request)
     {
         $selectedIds = $request->input('salary_ids');
         $months = $request->input('filter_month');
 
-        $query = DB::table('salary_months')
-            ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
-            ->join('users', 'users.nik', '=', 'salary_years.nik')
-            ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
-            ->select('users.name as nama', 'users.nik', 'users.id as id_users', 'users.no_telpon', 'salary_months.id as salary_month_id', 'salary_months.date as salary_month_date')
-            ->whereIn('salary_years.id', $selectedIds)
-            ->whereMonth('salary_months.date', $months)
-            ->get();
+        // dd($selectedIds, $months);
 
-        foreach ($query as $data) {
-            $days = Carbon::now()->subMonth(1)->format('mY');
-            $dayss = Carbon::now();
-            $day = ($dayss->hour < 12) ? "Pagi" : "Siang";
-
-            $name = $data->nama;
-            $month = Carbon::parse($data->salary_month_date)->format('F');
-
-            $customFileNames = $data->nik . $days . $data->salary_month_id;
-            $customFileName = Str::of($customFileNames)->toBase64();
-            $filePath = storage_path('app/public') . '/' . $customFileName . '.pdf';
-
-            $id = $data->salary_month_id;
-            $sal = DB::table('salary_months')
-                ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
-                ->join('users', 'users.nik', '=', 'salary_years.nik')
-                ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
-                ->select('salary_months.date as salary_month_date', 'salary_months.*', 'salary_years.*', 'users.*', 'grade.*')
-                ->where('salary_months.id', $id)
-                ->first();
-
-            // $sal = SalaryMonth::find($id);
-
-            // dd($sal, $sal->salary_year->nik);
-
-            if (!$sal) {
-                dd("Salary with ID $id not found.");
-            }
-
-            // $rate_salary = $sal->salary_year->salary_grade->rate_salary;
-            // $ability = $sal->salary_year->ability;
-            // $fungtional_alw = $sal->salary_year->fungtional_alw;
-            // $family_alw = $sal->salary_year->family_alw;
-            // $total = $rate_salary + $ability + $fungtional_alw + $family_alw;
-
-            $rate_salary = $sal->rate_salary;
-            $ability = $sal->ability;
-            $fungtional_alw = $sal->fungtional_alw;
-            $family_alw = $sal->family_alw;
-            $total = $rate_salary + $ability + $fungtional_alw + $family_alw;
-            $pdf = PDF::loadView('salary.print', compact('sal', 'total'));
-
-            file_put_contents($filePath, $pdf->output());
-
-            $mediaUrl = $data->nik . $days . $data->salary_month_id;
-            $urls = Str::of($mediaUrl)->toBase64();
-
-            // $url = "https://bskp.blog:9000/pdf/" . $urls . ".pdf" . "(This message containt dangerous file, please dont open it!)";
-            $url = "This message containt dangerous file, please dont open it!";
-
-            $twilio = new Client(env('TWILIO_AUTH_SID'), env('TWILIO_AUTH_TOKEN'));
-
-            $is_send = $twilio->messages->create(
-                "whatsapp:+" . $data->no_telpon,
-                [
-                    "contentSid" => env('TWILIO_CONTENT_ID'),
-                    "messagingServiceSid" => env('TWILIO_SERVICE_ID'),
-                    "from" => "whatsapp:" . env('TWILIO_PHONE_NUMBER'),
-                    "contentVariables" => json_encode([
-                        "1" => $day,
-                        "2" => $name,
-                        "3" => $month,
-                        "4" => $url,
-                    ]),
-                ]
-            );
-        }
-
-        if ($is_send) {
-            SalaryMonth::where('id', $id)->update(['is_send' => '1']);
-        }
+        //send to job
+        SendCheckedSalaryJob::dispatch($selectedIds, $months);
 
         return redirect()->back();
     }
