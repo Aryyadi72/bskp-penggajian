@@ -1,5 +1,27 @@
 @extends('layouts.main')
 @section('content')
+    <style>
+        /* Styling untuk header hari libur */
+        th.holiday-header {
+            background-color: #ffcccc !important;
+            /* Warna merah muda */
+            color: #000 !important;
+            /* Warna teks hitam untuk keterbacaan */
+        }
+
+        th.holiday-header:hover {
+            background-color: #ffcccc !important;
+            /* Tetap merah muda saat hover */
+        }
+
+        /* Mengatur ukuran kolom agar tidak terlalu lebar */
+        th,
+        td {
+            min-width: 60px;
+            max-width: 80px;
+            white-space: nowrap;
+        }
+    </style>
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
@@ -12,7 +34,7 @@
                     <div class="card-body p-3 pb-2">
                         <div class="row">
                             <div class="col-9">
-                                <table class="table table-bordered" style="width: 50px; height: 10px;">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Group</th>
@@ -27,18 +49,17 @@
                                         <tr>
                                             <th>Month</th>
                                             <th> : </th>
-                                            <th>{{ \Carbon\Carbon::parse($dateInput)->format('F') }}</th>
+                                            <th>{{ $formattedMonth }}</th>
                                         </tr>
                                     </thead>
                                 </table>
                             </div>
                             <div class="col-3">
                                 <form action="{{ url('/overtime-summary-index') }}" method="GET">
-                                    @csrf
                                     <div class="row">
                                         <div class="col pe-0">
-                                            <input type="month" name="month" id=""
-                                                class="form-select form-select-sm">
+                                            <input type="month" name="month" class="form-select form-select-sm"
+                                                value="{{ request('month') }}">
                                         </div>
                                         <div class="col-auto">
                                             <button type="submit" class="btn btn-primary btn-sm">Filter</button>
@@ -62,9 +83,24 @@
                                             <th>Dept</th>
                                             <th>Status</th>
                                             <th>Jabatan</th>
-                                            <th>Batas Lembur</th>
-                                            @foreach ($dates as $date)
-                                                <th>{{ \Carbon\Carbon::parse($date)->format('d') }}</th>
+                                            <th>Batas Lembur (Og)</th>
+                                            <th>Batas Lembur (Cal)</th>
+                                            @foreach ($dates as $dateInfo)
+                                                <th class="{{ $dateInfo['isHoliday'] ? 'holiday-header' : '' }}">
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <span class="small">
+                                                            {{ \Carbon\Carbon::parse($dateInfo['date'])->locale('id')->isoFormat('ddd') }}
+                                                            {{-- @if ($dateInfo['isHoliday'])
+                                                                ({{ \Carbon\Carbon::parse($dateInfo['date'])->format('d') }})
+                                                            @endif --}}
+                                                        </span>
+                                                        <span
+                                                            class="small">{{ \Carbon\Carbon::parse($dateInfo['date'])->format('d') }}</span>
+                                                        @if ($dateInfo['isHoliday'])
+                                                            <span class="small">{{ $dateInfo['holidayName'] }}</span>
+                                                        @endif
+                                                    </div>
+                                                </th>
                                             @endforeach
                                             <th>Total Lembur (Before)</th>
                                             <th>Adjust</th>
@@ -72,32 +108,37 @@
                                             <th>Nominal</th>
                                             <th>
                                                 <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)">
+                                                <label for="selectAll" class="small">Select All</label>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $nik => $records)
                                             @php
+                                                $firstRecord = $records->first();
                                                 $totalOvertime = $records->sum('hour_call');
+                                                $rateSalary = $firstRecord->rate_salary;
+                                                $ability = $firstRecord->ability;
+                                                $otlimit = $firstRecord->overtime_limit;
+                                                $salaryYearsId = $firstRecord->salary_years_id;
+                                                $STANDARD_HOURS = 173;
                                                 $adjust = 0;
                                                 $adjustedOvertime = $totalOvertime - $adjust;
-                                                $rateSalary = $records->first()->rate_salary;
-                                                $ability = $records->first()->ability;
-                                                $nominalUang = (($rateSalary + $ability) / 173) * $adjustedOvertime;
-                                                $salaryYearsId = $records->first()->salary_years_id;
-                                                $date = $records->first()->overtime_date;
+                                                $nominalUang =
+                                                    (($rateSalary + $ability) / $STANDARD_HOURS) * $adjustedOvertime;
                                             @endphp
                                             <tr>
                                                 <td class="text-center p-0">{{ $loop->iteration }}</td>
-                                                <td>{{ $records->first()->nik }}</td>
-                                                <td>{{ $records->first()->name }}</td>
-                                                <td>{{ $records->first()->dept }}</td>
-                                                <td>{{ $records->first()->status }}</td>
-                                                <td>{{ $records->first()->jabatan }}</td>
-                                                <td>{{ $records->first()->overtime_limit ?? '0' }} Jam / Bulan</td>
-                                                @foreach ($dates as $date)
+                                                <td>{{ $firstRecord->nik }}</td>
+                                                <td>{{ $firstRecord->name }}</td>
+                                                <td>{{ $firstRecord->dept }}</td>
+                                                <td>{{ $firstRecord->status }}</td>
+                                                <td>{{ $firstRecord->jabatan }}</td>
+                                                <td>{{ $firstRecord->overtime_limit ?? '0' }} Jam / Bulan</td>
+                                                <td>{{ $otlimit * 2 }} Jam / Bulan</td>
+                                                @foreach ($dates as $dateInfo)
                                                     <td class="text-center p-0">
-                                                        {{ $records->firstWhere('overtime_date', $date)?->hour_call ?? 0 }}
+                                                        {{ $records->firstWhere('overtime_date', $dateInfo['date'])?->hour_call ?? 0 }}
                                                     </td>
                                                 @endforeach
                                                 <td class="text-center p-0">{{ $totalOvertime }}</td>
@@ -109,16 +150,20 @@
                                                 <td id="adjusted_overtime_{{ $nik }}" class="text-center p-0">
                                                     {{ $totalOvertime }}</td>
                                                 <td id="nominal_uang_{{ $nik }}" class="text-end">
-                                                    {{ number_format((($rateSalary + $ability) / 173) * $totalOvertime, 2) }}
+                                                    {{ number_format((($rateSalary + $ability) / $STANDARD_HOURS) * $totalOvertime, 2) }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <input type="hidden" name="dates[]"
-                                                        value="{{ \Carbon\Carbon::parse($records->first()->overtime_date)->format('Y-m-13') }}">
                                                     <input type="hidden" name="salary_years_id_{{ $nik }}"
-                                                        value="{{ $records->first()->salary_years_id }}">
+                                                        value="{{ $salaryYearsId }}">
+                                                    <input type="hidden" id="adjusted_overtime_hidden_{{ $nik }}"
+                                                        name="adjusted_overtime_{{ $nik }}"
+                                                        value="{{ $adjustedOvertime }}">
+                                                    <input type="hidden" id="nominal_uang_hidden_{{ $nik }}"
+                                                        name="nominal_uang_{{ $nik }}"
+                                                        value="{{ number_format($nominalUang, 2) }}">
                                                     <input type="checkbox" id="checkbox_{{ $nik }}"
-                                                        name="selected_items[]"
-                                                        value="{{ $records->first()->salary_years_id }}|{{ $adjustedOvertime }}|{{ number_format($nominalUang, 2) }}">
+                                                        name="selected_items[]" value="{{ $nik }}">
+                                                    <label for="checkbox_{{ $nik }}">Select</label>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -131,38 +176,43 @@
             </div>
         </div>
 
+        <!-- Include jQuery dan Bootstrap JS jika belum disertakan -->
         <script src="{{ asset('assets/libs/jquery/jquery.js') }}"></script>
-        <script>
-            document.getElementById('checkAll').onclick = function() {
-                var checkboxes = document.querySelectorAll('input[name="selected[]"]');
-                for (var checkbox of checkboxes) {
-                    checkbox.checked = this.checked;
-                }
-            }
-        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             function toggleSelectAll(source) {
-                checkboxes = document.querySelectorAll('input[name="selected_items[]"]');
+                const checkboxes = document.querySelectorAll('input[name="selected_items[]"]');
                 checkboxes.forEach((checkbox) => {
                     checkbox.checked = source.checked;
                 });
             }
 
             function calculateAdjust(nik, totalOvertime, rateSalary, ability) {
-                let adjust = parseFloat(document.querySelector(`input[name="adjust_${nik}"]`).value) || 0;
+                const STANDARD_HOURS = 173;
+                let adjustInput = document.querySelector(`input[name="adjust_${nik}"]`);
+                let adjust = parseFloat(adjustInput.value) || 0;
+
+                // Mencegah nilai negatif
+                if (adjust < 0) {
+                    adjust = 0;
+                    adjustInput.value = adjust;
+                }
+
+                // Mencegah penyesuaian lebih besar dari total lembur
                 if (adjust > totalOvertime) {
                     adjust = totalOvertime;
-                    document.querySelector(`input[name="adjust_${nik}"]`).value = adjust;
+                    adjustInput.value = adjust;
                 }
+
                 let adjustedOvertime = totalOvertime - adjust;
-                let nominalUang = ((rateSalary + ability) / 173) * adjustedOvertime;
+                let nominalUang = ((rateSalary + ability) / STANDARD_HOURS) * adjustedOvertime;
+
                 document.getElementById(`adjusted_overtime_${nik}`).textContent = adjustedOvertime;
                 document.getElementById(`nominal_uang_${nik}`).textContent = nominalUang.toFixed(2);
-                let checkbox = document.getElementById(`checkbox_${nik}`);
-                if (checkbox) {
-                    checkbox.value =
-                        `${document.querySelector(`input[name="salary_years_id_${nik}"]`).value}|${adjustedOvertime}|${nominalUang.toFixed(2)}`;
-                }
+
+                // Update hidden inputs
+                document.getElementById(`adjusted_overtime_hidden_${nik}`).value = adjustedOvertime;
+                document.getElementById(`nominal_uang_hidden_${nik}`).value = nominalUang.toFixed(2);
             }
         </script>
     @endsection

@@ -13,6 +13,7 @@ use App\Models\OvertimeApproved;
 use App\Models\SalaryMonth;
 use App\Models\User;
 use App\Models\OvertimeMaster;
+use App\Models\Holiday;
 
 class OvertimeController extends Controller
 {
@@ -220,17 +221,80 @@ class OvertimeController extends Controller
         ]);
     }
 
-    public function index_summary()
+    // public function index_summary()
+    // {
+    //     $title = 'Summary Overtime';
+
+    //     $dateInput = request()->input('month');
+
+    //     if ($dateInput == null) {
+    //         $month = Carbon::now()->month;
+    //         $year = Carbon::now()->year;
+    //     } else {
+    //         list($year, $month) = explode('-', $dateInput);
+    //     }
+
+    //     $data = DB::table('overtime_approveds')
+    //         ->join('users', 'users.nik', '=', 'overtime_approveds.nik')
+    //         ->join('salary_years', 'salary_years.nik', '=', 'overtime_approveds.nik')
+    //         ->join('grade', 'grade.id', '=', 'salary_years.id_salary_grade')
+    //         ->select(
+    //             'users.nik',
+    //             'users.name',
+    //             'users.dept',
+    //             'users.status',
+    //             'users.jabatan',
+    //             'users.overtime_limit',
+    //             'overtime_approveds.overtime_date',
+    //             'overtime_approveds.hour_call',
+    //             'salary_years.ability',
+    //             'grade.rate_salary',
+    //             'salary_years.id as salary_years_id'
+    //         )
+    //         ->whereMonth('overtime_approveds.overtime_date', $month)
+    //         ->whereYear('overtime_approveds.overtime_date', $year)
+    //         ->get()
+    //         ->groupBy('nik');
+
+    //     $dataByStatus = $data->groupBy('status');
+
+    //     $dates = [];
+    //     $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+    //     $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+
+    //     for ($date = $startOfMonth; $date <= $endOfMonth; $date->addDay()) {
+    //         $dates[] = $date->format('Y-m-d');
+    //     }
+
+    //     return view('overtime.summary-new', [
+    //         'title' => $title,
+    //         'month' => $month,
+    //         'year' => $year,
+    //         'dates' => $dates,
+    //         'data' => $data,
+    //         'dateInput' => $dateInput,
+    //         'dataByStatus' => $dataByStatus
+    //     ]);
+    // }
+
+    public function index_summary(Request $request)
     {
         $title = 'Summary Overtime';
 
-        $dateInput = request()->input('month');
+        // Validasi input bulan
+        $request->validate([
+            'month' => 'nullable|date_format:Y-m',
+        ]);
+
+        $dateInput = $request->input('month');
 
         if ($dateInput == null) {
             $month = Carbon::now()->month;
             $year = Carbon::now()->year;
+            $formattedMonth = Carbon::now()->format('F');
         } else {
             list($year, $month) = explode('-', $dateInput);
+            $formattedMonth = Carbon::parse($dateInput)->format('F');
         }
 
         $data = DB::table('overtime_approveds')
@@ -255,25 +319,38 @@ class OvertimeController extends Controller
             ->get()
             ->groupBy('nik');
 
-        $dataByStatus = $data->groupBy('status');
+        $holidays = Holiday::whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->pluck('date')
+            ->toArray();
 
-        $dates = [];
+        // Membuat koleksi tanggal dengan hari
+        $dates = collect();
         $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth();
-        for ($date = $startOfMonth; $date <= $endOfMonth; $date->addDay()) {
-            $dates[] = $date->format('Y-m-d');
+
+        for ($date = $startOfMonth->copy(); $date <= $endOfMonth; $date->addDay()) {
+            $isHoliday = in_array($date->format('Y-m-d'), $holidays);
+            $dates->push([
+                'date' => $date->format('Y-m-d'),
+                'day' => $date->locale('id')->isoFormat('dddd'), // Nama hari dalam Bahasa Indonesia
+                'isHoliday' => $isHoliday,
+                'holidayName' => $isHoliday ? Holiday::where('date', $date->format('Y-m-d'))->first()->name : null,
+            ]);
         }
 
         return view('overtime.summary-new', [
             'title' => $title,
             'month' => $month,
             'year' => $year,
+            'formattedMonth' => $formattedMonth,
             'dates' => $dates,
             'data' => $data,
             'dateInput' => $dateInput,
-            'dataByStatus' => $dataByStatus
+            // 'dataByStatus' => $dataByStatus
         ]);
     }
+
 
     public function store(Request $request)
     {

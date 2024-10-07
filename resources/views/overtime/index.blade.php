@@ -127,8 +127,24 @@
                                                         <td>{{ $item['jabatan'] ?? 'Jabatan tidak ditemukan' }}</td>
                                                         <td class="text-center">{{ $overtime_hour }}</td>
                                                         <td class="text-center">{{ $overtime_minute }}</td>
-                                                        <td class="text-center">{{ $overtime_hour_after_cal }}</td>
-                                                        <td class="text-center">{{ number_format($totalOvertime) }}</td>
+                                                        {{-- <td class="text-center">{{ $overtime_hour_after_cal }}</td> --}}
+                                                        {{-- <td class="text-center">{{ number_format($totalOvertime) }}</td> --}}
+                                                        <td class="text-center">
+                                                            <input type="number"
+                                                                name="adjust_ot_call[{{ $item['user_id'] }}]"
+                                                                value="{{ $overtime_hour_after_cal }}" min="0"
+                                                                step="0.01" style="width: 50px;"
+                                                                data-rate-salary="{{ $rate_salary }}"
+                                                                data-ability="{{ $ability }}"
+                                                                oninput="updateTotalOvertime('{{ $item['user_id'] }}', this.value)">
+                                                        </td>
+                                                        <!-- Kolom Kalkulasi dengan ID unik -->
+                                                        <td class="text-center">
+                                                            <input type="text"
+                                                                id="total_overtime_{{ $item['user_id'] }}"
+                                                                value="{{ number_format($totalOvertime, 2) }}" readonly
+                                                                style="width: 70px;">
+                                                        </td>
                                                         <td class="text-center">
                                                             @if ($isApproved == 'Yes')
                                                                 <span class="sent">✓</span>
@@ -160,6 +176,37 @@
                 });
             });
         </script>
+
+        <script>
+            /**
+             * Menghitung ulang nilai Kalkulasi berdasarkan OT Call yang diubah.
+             *
+             * @param {string} userId - ID unik pengguna.
+             * @param {number} hourCall - Nilai OT Call yang diinputkan.
+             */
+            function updateTotalOvertime(userId, hourCall) {
+                // Cari elemen input yang mengandung data-rate-salary dan data-ability
+                const adjustInput = document.querySelector(`input[name="adjust_ot_call[${userId}]"]`);
+                if (!adjustInput) return;
+
+                // Ambil data-rate-salary dan data-ability
+                const rateSalary = parseFloat(adjustInput.getAttribute('data-rate-salary')) || 0;
+                const ability = parseFloat(adjustInput.getAttribute('data-ability')) || 0;
+
+                // Parsing nilai OT Call
+                const parsedHourCall = parseFloat(hourCall) || 0;
+
+                // Hitung total overtime berdasarkan formula
+                const totalOvertime = ((rateSalary + ability) / 173) * parsedHourCall;
+
+                // Cari elemen Kalkulasi berdasarkan ID unik
+                const kalkulasiInput = document.getElementById(`total_overtime_${userId}`);
+                if (kalkulasiInput) {
+                    kalkulasiInput.value = totalOvertime.toFixed(2); // Pembulatan 2 desimal
+                }
+            }
+        </script>
+
 
         <script>
             function toggleSelectAll(source) {
