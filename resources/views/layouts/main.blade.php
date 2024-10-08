@@ -80,7 +80,7 @@
                         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{ $title }}
                         </li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">{{ $title }}</h6>
+                    {{-- <h6 class="font-weight-bolder mb-0">{{ $title }}</h6> --}}
 
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">

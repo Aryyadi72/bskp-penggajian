@@ -15,12 +15,12 @@
         }
 
         /* Mengatur ukuran kolom agar tidak terlalu lebar */
-        th,
-        td {
-            min-width: 60px;
-            max-width: 80px;
-            white-space: nowrap;
-        }
+        /* th,
+            td {
+                min-width: 60px;
+                max-width: 80px;
+                white-space: nowrap;
+            } */
     </style>
     <div class="container-fluid py-4">
         <div class="row">
@@ -134,8 +134,8 @@
                                                 <td>{{ $firstRecord->dept }}</td>
                                                 <td>{{ $firstRecord->status }}</td>
                                                 <td>{{ $firstRecord->jabatan }}</td>
-                                                <td>{{ $firstRecord->overtime_limit ?? '0' }} Jam / Bulan</td>
-                                                <td>{{ $otlimit * 2 }} Jam / Bulan</td>
+                                                <td>{{ $firstRecord->overtime_limit ?? '0' }} Jam</td>
+                                                <td>{{ $otlimit * 2 }} Jam</td>
                                                 @foreach ($dates as $dateInfo)
                                                     <td class="text-center p-0">
                                                         {{ $records->firstWhere('overtime_date', $dateInfo['date'])?->hour_call ?? 0 }}

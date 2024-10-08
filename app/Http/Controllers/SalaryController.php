@@ -1482,7 +1482,7 @@ class SalaryController extends Controller
             });
         });
 
-        return view('salary.salary-monitoring', [
+        return view('salary.salary-monitoring-nd', [
             'title' => $title,
             'currentYear' => $currentYear,
             'counts' => $counts,

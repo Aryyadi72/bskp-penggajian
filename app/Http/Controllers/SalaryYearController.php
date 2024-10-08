@@ -223,8 +223,8 @@ class SalaryYearController extends Controller
             $adjustment = isset($input['adjustment'][$key]) ? (int) str_replace(',', '', $input['adjustment'][$key]) : 0;
 
             // $total = $rate_salary + $ability + $family_alw;
-            $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw;
-            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw;
+            $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw + $skill_alw + $telephone_alw;
+            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw + $telephone_alw;
 
             if ($totalBpjs > 12000000) {
                 $bpjs = 12000000 * 0.01;
@@ -344,8 +344,8 @@ class SalaryYearController extends Controller
             $skill_alw = $request->has('skill_alw.' . $id) ? (int) str_replace(',', '', $request->input('skill_alw.' . $id)) : 0;
             $adjustment = $request->has('adjustment.' . $id) ? (int) str_replace(',', '', $request->input('adjustment.' . $id)) : 0;
 
-            $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw;
-            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw;
+            $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw + $telephone_alw + $skill_alw;
+            $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw + $telephone_alw;
 
             if ($totalBpjs > 12000000) {
                 $bpjs = 12000000 * 0.01;
