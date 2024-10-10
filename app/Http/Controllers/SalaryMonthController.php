@@ -137,18 +137,18 @@ class SalaryMonthController extends Controller
 
         // dd($checkYear, $checkMonth, $checkStatus, $statusFilter);
 
-        $global = DB::table('salary_years')
-            ->join('users', 'salary_years.nik', '=', 'users.nik')
-            ->select('salary_years.id as salary_years_id')
-            ->where('users.status', $statusFilter)
-            ->get();
+        // $global = DB::table('salary_years')
+        //     ->join('users', 'salary_years.nik', '=', 'users.nik')
+        //     ->select('salary_years.id as salary_years_id')
+        //     ->where('users.status', $statusFilter)
+        //     ->get();
 
-        foreach ($global as $g) {
-            SalaryMonth::firstOrCreate([
-                'id_salary_year' =>$g->salary_years_id,
-                'date' => $yearFilter . '-' . $monthFilter . '-13',
-            ]);
-        }
+        // foreach ($global as $g) {
+        //     SalaryMonth::firstOrCreate([
+        //         'id_salary_year' =>$g->salary_years_id,
+        //         'date' => $yearFilter . '-' . $monthFilter . '-13',
+        //     ]);
+        // }
 
         $data = DB::table('users')
             ->join('grade', 'users.grade', '=', 'grade.name_grade')
@@ -175,7 +175,7 @@ class SalaryMonthController extends Controller
                     ->where('users.active', 'yes')
                     ->get();
 
-                    dd($data);
+                    // dd($data);
 
             } elseif ($checkYear != null && $checkMonth == null) {
 

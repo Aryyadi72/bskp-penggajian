@@ -56,6 +56,9 @@ class SalaryController extends Controller
         $selectedYear = (int) $selectedYear;
         $selectedMonth = (int) $selectedMonth;
 
+        $subMonth = Carbon::now()->subMonth()->format('m');
+        $subMonthNd = Carbon::now()->subMonth(2)->format('m');
+
         if ($selectedYear == null && $selectedMonth == null && $selectedStatus == null && $selectedApprove == null) {
             $data = DB::table('salary_months')
                 ->join('salary_years', 'salary_months.id_salary_year', '=', 'salary_years.id')
@@ -64,7 +67,7 @@ class SalaryController extends Controller
                 ->select('salary_months.*', 'salary_years.*', 'users.*', 'grade.*', 'salary_months.date as salary_month_date', 'salary_months.id as salary_month_id')
                 ->whereIn('users.status', ['Manager', 'Staff', 'Monthly', 'Contract BSKP'])
                 ->where('users.active', 'yes')
-                // ->where('salary_years.nik', '200-151')
+                ->whereMonth('salary_months.date', $subMonth)
                 ->get();
         } else {
             if ($selectedStatus == 'All Status') {
@@ -319,14 +322,21 @@ class SalaryController extends Controller
         $selectedYear = (int) $selectedYear;
         $selectedMonth = (int) $selectedMonth;
 
+        $subMonth = Carbon::now()->subMonth()->format('m');
+        $subMonthNd = Carbon::now()->subMonth(2)->format('m');
+
         if ($selectedYear == null && $selectedMonth == null && $selectedStatus == null) {
             $data = DB::table('salary_months')
                 ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
                 ->join('users', 'users.nik', '=', 'salary_years.nik')
                 ->join('grade', 'users.grade', '=', 'grade.name_grade')
                 ->select('salary_months.*', 'salary_years.*', 'users.*', 'grade.*', 'salary_months.date as salary_month_date', 'salary_months.id as salary_month_id')
-                ->whereIn('users.status', ['Manager', 'Staff', 'Monthly'])
+                ->whereIn('users.status', ['Manager', 'Staff', 'Monthly', 'Contract BSKP'])
                 ->where('users.active', 'yes')
+                ->where(function($query) use ($subMonth, $subMonthNd) {
+                    $query->whereMonth('salary_months.date', $subMonth)
+                    ->orWhereMonth('salary_months.date', $subMonthNd);
+                })
                 ->get();
         } else {
             if ($selectedStatus == 'All Status') {

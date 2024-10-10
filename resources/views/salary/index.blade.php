@@ -70,7 +70,7 @@
                         <div class="table-responsive p-0">
                             <form id="printForm" method="POST" action="">
                                 @csrf
-                                <button type="submit" class="btn btn-icon btn-3 btn-primary btn-sm" name="action"
+                                {{-- <button type="submit" class="btn btn-icon btn-3 btn-primary btn-sm" name="action"
                                     value="check" formaction="{{ route('salary-check') }}">
                                     <span class="btn-inner--icon"><i class="material-icons">check</i></span>
                                     <span class="btn-inner--text">Check Selected</span>
@@ -80,7 +80,7 @@
                                     value="approved" formaction="{{ route('salary-approved') }}">
                                     <span class="btn-inner--icon"><i class="material-icons">thumb_up</i></span>
                                     <span class="btn-inner--text">Approved Selected</span>
-                                </button>
+                                </button> --}}
                                 <table
                                     class="table table-sm table-striped table-hover dtTable200 align-items-center small-tbl compact"
                                     id="example">
@@ -98,8 +98,8 @@
                                             <th rowspan="2" class="text-center">Nett Salary</th>
                                             <th rowspan="2" class="text-center">Allocation</th>
                                             <th rowspan="2" class="text-center">Date Input</th>
-                                            <th rowspan="2" class="text-center">Check</th>
-                                            <th rowspan="2" class="text-center">Approve</th>
+                                            {{-- <th rowspan="2" class="text-center">Check</th> --}}
+                                            {{-- <th rowspan="2" class="text-center">Approve</th> --}}
                                             <th rowspan="2" class="text-center">Action</th>
                                         </tr>
                                         <tr>
@@ -170,8 +170,7 @@
                                                     {{ $sal->fungtional_alw != 0 ? number_format($sal->fungtional_alw, 0, ',', '.') : '-' }}
                                                 </td>
                                                 <td class="text-end">
-                                                    <input type="hidden" name="skill_alw[]"
-                                                        value="{{ $sal->skill_alw }}">
+                                                    <input type="hidden" name="skill_alw[]" value="{{ $sal->skill_alw }}">
                                                     {{ $sal->skill_alw != 0 ? number_format($sal->skill_alw, 0, ',', '.') : '-' }}
                                                 </td>
                                                 <td class="text-end">
@@ -283,7 +282,8 @@
                                                         value="{{ $sal->salary_month_date }}">
                                                     {{ date('d M Y', strtotime($sal->salary_month_date)) }}
                                                 </td>
-                                                <td class="align-middle text-center text-sm">
+
+                                                {{-- <td class="align-middle text-center text-sm">
                                                     @if ($sal->is_checked == 1)
                                                         <span class="badge badge-sm bg-gradient-success">✓
                                                         @else
@@ -296,7 +296,8 @@
                                                         @else
                                                             <span class="badge badge-sm bg-gradient-danger">✗
                                                     @endif
-                                                </td>
+                                                </td> --}}
+
                                                 <td class="text-center m-0 p-0">
                                                     <button class="btn btn-primary btn-icon-only m-0 p-0 btn-sm"
                                                         type="button" data-bs-toggle="modal"
@@ -359,7 +360,7 @@
                                             <td class="text-end">{{ number_format($totalNetsalary, 0, ',', '.') }}
                                             </td>
                                             <td class="text-end">0</td>
-                                            <td colspan="4" style="background-color: #1A73E8;color: white;"></td>
+                                            <td colspan="2" style="background-color: #1A73E8;color: white;"></td>
                                         </tr>
                                     </tfoot>
                                 </table>

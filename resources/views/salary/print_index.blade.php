@@ -94,8 +94,8 @@
                                             <th rowspan="2" class="text-center">Nett Salary</th>
                                             <th rowspan="2" class="text-center">Allocation</th>
                                             <th rowspan="2" class="text-center">Date Input</th>
-                                            <th rowspan="2" class="text-center">Check</th>
-                                            <th rowspan="2" class="text-center">Approve</th>
+                                            {{-- <th rowspan="2" class="text-center">Check</th> --}}
+                                            {{-- <th rowspan="2" class="text-center">Approve</th> --}}
                                             <th rowspan="2" class="text-center">Action</th>
                                         </tr>
                                         <tr>
@@ -231,7 +231,7 @@
                                                 <td class="text-end">
                                                     {{ date('d M Y', strtotime($sal->salary_month_date)) }}
                                                 </td>
-                                                <td class="align-middle text-center text-sm">
+                                                {{-- <td class="align-middle text-center text-sm">
                                                     @if ($sal->is_checked == 1)
                                                         <span class="badge badge-sm bg-gradient-success">✓
                                                         @else
@@ -244,7 +244,7 @@
                                                         @else
                                                             <span class="badge badge-sm bg-gradient-danger">✗
                                                     @endif
-                                                </td>
+                                                </td> --}}
                                                 <td class="text-center m-0 p-0">
                                                     </button>
                                                     <a href="{{ url('/print-pdf/' . $sal->salary_month_id) }}"
@@ -286,7 +286,7 @@
                                             <td class="text-end">{{ number_format($totalTotalded, 0, ',', '.') }}</td>
                                             <td class="text-end">{{ number_format($totalNetsalary, 0, ',', '.') }}</td>
                                             <td class="text-end">0</td>
-                                            <td colspan="4" style="background-color: #1A73E8;color: white;"></td>
+                                            <td colspan="2" style="background-color: #1A73E8;color: white;"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
