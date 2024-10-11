@@ -296,13 +296,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Jamsostek TK</td>
+                            <td>Jamsostek JKM</td>
                             <td>:</td>
                             <td class="text-end">{{ number_format($total * 0.003, 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <td>Jamsostek THT</td>
+                            <td>Jamsostek JHT</td>
                             <td>:</td>
                             <td class="text-end">{{ number_format($total * 0.037, 0, ',', '.') }}
                             </td>
@@ -333,13 +333,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Jamsostek TK</td>
+                            <td>Jamsostek JKM</td>
                             <td>:</td>
                             <td class="text-end">{{ number_format($total * 0.003, 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <td>Jamsostek THT</td>
+                            <td>Jamsostek JHT</td>
                             <td>:</td>
                             <td class="text-end">{{ number_format($total * 0.037, 0, ',', '.') }}
                             </td>
@@ -364,7 +364,7 @@
             <tr>
 
                 <td style="padding-left: 10px; padding-right: 10px; margin-bottom: 0;">
-                    <div class="outline-border">
+                    <div class="outline-border" style="padding-left: 10px; padding-right: 10px; margin-top: -20;">
                         <table class="tb-detail">
                             <tr>
                                 <td>Salary Gross + <br>Total Benefit</td>
@@ -394,7 +394,7 @@
             </tr>
         </table>
 
-        <hr class="dash-line" style="margin-top: 0px">
+        <hr class="dash-line" style="margin-top: -15px">
 
         <div class="table-collapse">
             <table>

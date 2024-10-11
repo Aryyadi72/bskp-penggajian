@@ -482,16 +482,46 @@ class SalaryController extends Controller
             return back()->with('error', 'Please select at least one salary to print.');
         }
 
-        $salaries = SalaryMonth::whereIn('id', $salaryIds)->get();
+        // $salaries = SalaryMonth::whereIn('id', $salaryIds)->get();
+
+        $salaries = DB::table('salary_months')
+            ->join('salary_years', 'salary_years.id', '=', 'salary_months.id_salary_year')
+            ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
+            ->join('users', 'users.nik', '=', 'salary_years.nik')
+            ->select(
+                'users.nik as Emp_Code',
+                'users.name as Nama',
+                'users.status as Status',
+                'users.dept as Dept',
+                'users.jabatan as Jabatan',
+                'users.start_work_user',
+                'grade.name_grade as Grade',
+                'grade.rate_salary',
+                'salary_years.*',
+                'salary_months.*',
+                'salary_months.absent',
+                'salary_months.electricity',
+                'salary_months.cooperative',
+                'salary_months.pinjaman',
+                'salary_months.other',
+                'salary_months.date as salary_months_date',
+                'salary_months.total_deduction',
+                'salary_months.net_salary'
+            )
+            ->whereIn('salary_months.id', $salaryIds)
+            ->get();
+
+        // dd($salaries);
+
         $pdfData = [];
 
         foreach ($salaries as $sal) {
             $date = date('My', strtotime($sal->date));
 
-            $rate_salary = $sal->salary_year->salary_grade->rate_salary;
-            $ability = $sal->salary_year->ability;
-            $fungtional_alw = $sal->salary_year->fungtional_alw;
-            $family_alw = $sal->salary_year->family_alw;
+            $rate_salary = $sal->rate_salary;
+            $ability = $sal->ability;
+            $fungtional_alw = $sal->fungtional_alw;
+            $family_alw = $sal->family_alw;
 
             $total = $rate_salary + $ability + $fungtional_alw + $family_alw;
 
@@ -501,7 +531,7 @@ class SalaryController extends Controller
             ];
         }
 
-        $pdf = PDF::loadView('salary.print_multiple', compact('pdfData'));
+        $pdf = PDF::loadView('salary.print_multiple', compact('pdfData', 'salaries'));
         return $pdf->setPaper('a4', 'potrait')->stream('Salaries_' . date('Ymd') . '.pdf');
     }
 

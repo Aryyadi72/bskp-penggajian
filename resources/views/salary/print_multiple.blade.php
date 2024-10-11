@@ -85,7 +85,8 @@
                 </tr>
                 <tr>
                     <td>Bentok Darat, Bati-Bati, Kab.Tanah Laut</td>
-                    <td align="right" class="uppercase">SALARY PAYMENT</td>
+                    <td align="right" class="uppercase">SALARY PAYMENT
+                        {{ date('F Y', strtotime($data['sal']->salary_months_date)) }}
                 </tr>
                 <tr>
                     <td> <u>Kalimantan Selatan - 70852</u></td>
@@ -103,19 +104,16 @@
                         <table class="tb-detail">
                             <tr>
                                 <td>Employe Code </td>
-                                <td> : {{ $data['sal']->salary_year->user->nik }}</td>
+                                <td> : {{ $data['sal']->Emp_Code }}</td>
                             </tr>
-                            <tr>
-                                <td>Employe Name</td>
-                                <td>: {{ $data['sal']->salary_year->user->name }}</td>
-                            </tr>
+
                             <tr>
                                 <td>Grade</td>
-                                <td>: {{ $data['sal']->salary_year->user->name_grade }}</td>
+                                <td>: {{ $data['sal']->Grade }}</td>
                             </tr>
                             <tr>
                                 <td>Status</td>
-                                <td>: {{ $data['sal']->salary_year->user->name_status }}</td>
+                                <td>: {{ $data['sal']->Status }}</td>
                             </tr>
                         </table>
                     </td>
@@ -123,22 +121,16 @@
                     <td>
                         <table class="tb-detail">
                             <tr>
+                                <td>Employe Name</td>
+                                <td>: {{ $data['sal']->Nama }}</td>
+                            </tr>
+                            <tr>
                                 <td>Departement</td>
-                                <td>: {{ $data['sal']->salary_year->user->name_dept }}</td>
+                                <td>: {{ $data['sal']->Dept }}</td>
                             </tr>
                             <tr>
                                 <td>Job</td>
-                                <td>: {{ $data['sal']->salary_year->user->name_job }}</td>
-                            </tr>
-                            <tr>
-                                <td>Start working</td>
-                                <td>:
-                                    {{ date('H:i', strtotime($data['sal']->salary_year->user->start_work_user)) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Tax Number</td>
-                                <td>: -</td>
+                                <td>: {{ $data['sal']->Jabatan }}</td>
                             </tr>
                         </table>
                     </td>
@@ -161,27 +153,27 @@
                                 <td>Grade</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->salary_grade->rate_salary, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->rate_salary, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Ability</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->ability, 0, ',', '.') }}</td>
+                                    {{ number_format($data['sal']->ability, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td>Fungtional All</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->fungtional_alw, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->fungtional_alw, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Family All</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->family_alw, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->family_alw, 0, ',', '.') }}
                                 </td>
                             </tr>
 
@@ -189,21 +181,21 @@
                                 <td>Transport All</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->transport_alw, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->transport_alw, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Skill All</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->skill_alw, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->skill_alw, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Telephone All</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->telephone_alw, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->telephone_alw, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
@@ -233,7 +225,7 @@
                                 <td>Adjustment</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->adjustment, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->adjustment, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr class="top-border">
@@ -252,17 +244,22 @@
                                 <td colspan="3"><u><b>B. DEDUCTION</b></u></td>
                             </tr>
                             <tr>
+                                <td>Pinjaman</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($data['sal']->pinjaman, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
                                 <td>BPJS</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->bpjs, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->bpjs, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Jamsostek</td>
                                 <td>:</td>
                                 <td class="text-end">
-                                    {{ number_format($data['sal']->salary_year->jamsostek, 0, ',', '.') }}
+                                    {{ number_format($data['sal']->jamsostek, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
@@ -290,6 +287,11 @@
                                     {{ number_format($data['sal']->cooperative, 0, ',', '.') }}
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Other</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($data['sal']->other, 0, ',', '.') }}</td>
+                            </tr>
                             <tr class="top-border">
                                 <td><b>Sub Total</b></td>
                                 <td>:</td>
@@ -312,13 +314,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Jamsostek TK</td>
+                                <td>Jamsostek JKM</td>
                                 <td>:</td>
                                 <td class="text-end">{{ number_format($data['total'] * 0.003, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
-                                <td>Jamsostek THT</td>
+                                <td>Jamsostek JHT</td>
                                 <td>:</td>
                                 <td class="text-end">{{ number_format($data['total'] * 0.037, 0, ',', '.') }}
                                 </td>
@@ -326,14 +328,15 @@
                             <tr>
                                 <td>Tax PPh 21</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['sal']->pph21_ben, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['sal']->pph21_ben, 0, ',', '.') }}
+                                </td> --}}
+                                <td>0</td>
                             </tr>
                             <tr class="top-border">
                                 <td><b>Sub Total</b></td>
                                 <td>:</td>
                                 <td class="text-end"><b>
-                                        {{ number_format($data['sal']->salary_year->total_ben, 0, ',', '.') }}</b>
+                                        {{ number_format($data['sal']->total_ben, 0, ',', '.') }}</b>
                                 </td>
                             </tr>
                         </table>
@@ -348,13 +351,13 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Jamsostek TK</td>
+                                <td>Jamsostek JKM</td>
                                 <td>:</td>
                                 <td class="text-end">{{ number_format($data['total'] * 0.003, 0, ',', '.') }}
                                 </td>
                             </tr>
                             <tr>
-                                <td>Jamsostek THT</td>
+                                <td>Jamsostek JHT</td>
                                 <td>:</td>
                                 <td class="text-end">{{ number_format($data['total'] * 0.037, 0, ',', '.') }}
                                 </td>
@@ -362,14 +365,15 @@
                             <tr>
                                 <td>Tax PPh 21</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['sal']->pph21_deb, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['sal']->pph21_deb, 0, ',', '.') }}
+                                </td> --}}
+                                <td>0</td>
                             </tr>
                             <tr class="top-border">
                                 <td><b>Sub Total</b></td>
                                 <td><b>:</b></td>
                                 <td class="text-end"><b>
-                                        {{ number_format($data['sal']->salary_year->total_ben_ded, 0, ',', '.') }}</b>
+                                        {{ number_format($data['sal']->total_ben_ded, 0, ',', '.') }}</b>
                                 </td>
                             </tr>
                         </table>
@@ -380,7 +384,7 @@
                 <tr>
 
                     <td style="padding-left: 10px; padding-right: 10px; margin-bottom: 0;">
-                        <div class="outline-border">
+                        <div class="outline-border" style="padding-left: 10px; padding-right: 10px; margin-top: -20;">
                             <table class="tb-detail">
                                 <tr>
                                     <td>Salary Gross + <br>Total Benefit</td>
@@ -410,7 +414,7 @@
                 </tr>
             </table>
 
-            <hr class="dash-line" style="margin-top: 0px">
+            <hr class="dash-line" style="margin-top: -15px">
 
             <div class="table-collapse">
                 <table>
@@ -418,7 +422,7 @@
                         <td>
                             Receive by
                             <br><br><br>
-                            {{ $data['sal']->salary_year->user->name }}
+                            {{ $data['sal']->Nama }}
                         </td>
                         <td style="vertical-align: top">generate by system - no signature is required</td>
                     </tr>
@@ -428,6 +432,7 @@
         @if ($loop->iteration % 2 == 0)
             <div class="page-break"></div>
         @endif
+        <hr class="dash-line" style="margin-top: 0px; background-color: #022b83;border: none;">
     @endforeach
 </body>
 

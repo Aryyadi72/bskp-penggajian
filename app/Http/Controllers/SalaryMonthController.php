@@ -160,7 +160,9 @@ class SalaryMonthController extends Controller
             ->select('users.*', 'grade.*', 'users.nik as id_user', 'salary_years.id as id_salary_year', 'grade.id as id_grade', 'salary_years.*')
             ->get();
 
-        // dd($data);
+            // dd($data);
+
+        // dd($data->isEmpty());
 
         if ($checkStatus != null) {
             if ($checkYear != null && $checkMonth != null) {
@@ -204,6 +206,15 @@ class SalaryMonthController extends Controller
                     ->select('users.*', 'grade.*', 'users.nik as id_user', 'salary_years.id as id_salary_year', 'grade.id as id_grade', 'salary_years.*')
                     ->get();
             }
+        } elseif ($data->isEmpty()) {
+            $data = DB::table('users')
+                ->join('grade', 'users.grade', '=', 'grade.name_grade')
+                ->join('salary_years', 'salary_years.nik', '=', 'users.nik')
+                ->where('users.active', 'yes')
+                ->where('users.status', $statusFilter)
+                ->where('users.active', 'yes')
+                ->select('users.*', 'grade.*', 'users.nik as id_user', 'salary_years.id as id_salary_year')
+                ->get();
         } else {
             $data = DB::table('users')
                 ->join('grade', 'users.grade', '=', 'grade.name_grade')

@@ -345,12 +345,13 @@ class SalaryYearController extends Controller
             $adjustment = $request->has('adjustment.' . $id) ? (int) str_replace(',', '', $request->input('adjustment.' . $id)) : 0;
 
             $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw + $telephone_alw + $skill_alw;
+            $totalBpjsCal = $rate_salary + $ability + $family_alw;
             $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw + $telephone_alw;
 
             if ($totalBpjs > 12000000) {
                 $bpjs = 12000000 * 0.01;
             } else {
-                $bpjs = $totalBpjs * 0.01;
+                $bpjs = $totalBpjsCal * 0.01;
             }
 
             // $total = $rate_salary + $ability + $fungtional_alw + $family_alw + $transport_alw + $telephone_alw + $skill_alw;
