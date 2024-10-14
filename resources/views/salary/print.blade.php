@@ -9,8 +9,6 @@
         SAL_{{ date('My', strtotime($sal->salary_months_date)) }}_{{ $sal->Emp_Code }}_{{ $sal->Nama }}
     </title>
 
-    <!-- CSS Files -->
-    {{-- <link id="pagestyle" href="{{ public_path ('assets/libs/bootstrap5/css/bootstrap.min.css') }}" rel="stylesheet" /> --}}
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
@@ -143,7 +141,6 @@
     <div class="table-collapse">
         <table>
             <tr>
-
                 <td rowspan="2" style="vertical-align: top; padding-right: 10px;  padding-bottom: 0;">
                     <table class="tb-detail">
                         <tr>
@@ -284,85 +281,152 @@
                     </table>
                 </td>
 
-                <td rowspan="2" style="vertical-align: top; padding-left:10px; padding-bottom: 0;">
-                    <table class="tb-detail">
-                        <tr>
-                            <td colspan="3"><u><b>C. BENEFIT</b></u></td>
-                        </tr>
-                        <tr>
-                            <td>Jamsostek JKK</td>
-                            <td>:</td>
-                            <td class="text-end">{{ number_format($total * 0.0054, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jamsostek JKM</td>
-                            <td>:</td>
-                            <td class="text-end">{{ number_format($total * 0.003, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jamsostek JHT</td>
-                            <td>:</td>
-                            <td class="text-end">{{ number_format($total * 0.037, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tax PPh 21</td>
-                            <td>:</td>
-                            {{-- <td class="text-end">{{ number_format($sal->pph21_ben, 0, ',', '.') }}</td> --}}
-                            <td class="text-end">0</td>
-                        </tr>
-                        <tr class="top-border">
-                            <td><b>Sub Total</b></td>
-                            <td>:</td>
-                            <td class="text-end"><b>
-                                    {{ number_format($sal->total_ben, 0, ',', '.') }}</b>
-                            </td>
-                            <td class="text-end"><b></b></td>
-                        </tr>
-                    </table>
-                    <table class="tb-detail" style="margin-top: 28px;">
-                        <tr>
-                            <td colspan="3"><u><b>D. DEDUCTION BENEFIT</b></u></td>
-                        </tr>
-                        <tr>
-                            <td>Jamsostek JKK</td>
-                            <td>:</td>
-                            <td class="text-end">{{ number_format($total * 0.0054, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jamsostek JKM</td>
-                            <td>:</td>
-                            <td class="text-end">{{ number_format($total * 0.003, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Jamsostek JHT</td>
-                            <td>:</td>
-                            <td class="text-end">{{ number_format($total * 0.037, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tax PPh 21</td>
-                            <td>:</td>
-                            <td class="text-end">0</td>
-                        </tr>
-                        <tr class="top-border">
-                            <td><b>Sub Total</b></td>
-                            <td><b>:</b></td>
-                            <td class="text-end"><b>
-                                    {{ number_format($sal->total_ben_ded, 0, ',', '.') }}</b>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-
+                @if ($sal->jamsostek == 0)
+                    <td rowspan="2" style="vertical-align: top; padding-left:10px; padding-bottom: 0;">
+                        <table class="tb-detail">
+                            <tr>
+                                <td colspan="3"><u><b>C. BENEFIT</b></u></td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKK</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKM</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JHT</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr>
+                                <td>Tax PPh 21</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr class="top-border">
+                                <td><b>Sub Total</b></td>
+                                <td>:</td>
+                                <td class="text-end"><b>
+                                        {{ number_format($sal->total_ben, 0, ',', '.') }}</b>
+                                </td>
+                                <td class="text-end"><b></b></td>
+                            </tr>
+                        </table>
+                        <table class="tb-detail" style="margin-top: 28px;">
+                            <tr>
+                                <td colspan="3"><u><b>D. DEDUCTION BENEFIT</b></u></td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKK</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKM</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JHT</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr>
+                                <td>Tax PPh 21</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr class="top-border">
+                                <td><b>Sub Total</b></td>
+                                <td><b>:</b></td>
+                                <td class="text-end"><b>
+                                        {{ number_format($sal->total_ben_ded, 0, ',', '.') }}</b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                @else
+                    <td rowspan="2" style="vertical-align: top; padding-left:10px; padding-bottom: 0;">
+                        <table class="tb-detail">
+                            <tr>
+                                <td colspan="3"><u><b>C. BENEFIT</b></u></td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKK</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($total * 0.0054, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKM</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($total * 0.003, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JHT</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($total * 0.037, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tax PPh 21</td>
+                                <td>:</td>
+                                {{-- <td class="text-end">{{ number_format($sal->pph21_ben, 0, ',', '.') }}</td> --}}
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr class="top-border">
+                                <td><b>Sub Total</b></td>
+                                <td>:</td>
+                                <td class="text-end"><b>
+                                        {{ number_format($sal->total_ben, 0, ',', '.') }}</b>
+                                </td>
+                                <td class="text-end"><b></b></td>
+                            </tr>
+                        </table>
+                        <table class="tb-detail" style="margin-top: 28px;">
+                            <tr>
+                                <td colspan="3"><u><b>D. DEDUCTION BENEFIT</b></u></td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKK</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($total * 0.0054, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JKM</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($total * 0.003, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jamsostek JHT</td>
+                                <td>:</td>
+                                <td class="text-end">{{ number_format($total * 0.037, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tax PPh 21</td>
+                                <td>:</td>
+                                <td class="text-end">0</td>
+                            </tr>
+                            <tr class="top-border">
+                                <td><b>Sub Total</b></td>
+                                <td><b>:</b></td>
+                                <td class="text-end"><b>
+                                        {{ number_format($sal->total_ben_ded, 0, ',', '.') }}</b>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                @endif
             </tr>
-
             <tr>
-
                 <td style="padding-left: 10px; padding-right: 10px; margin-bottom: 0;">
                     <div class="outline-border" style="padding-left: 10px; padding-right: 10px; margin-top: -20;">
                         <table class="tb-detail">

@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\SalaryMonth;
 use App\Models\Status;
 use App\Models\SalaryYear;
-
 use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 use Carbon\Carbon;
 use PDF;
 use Twilio\Rest\Client;
@@ -28,6 +29,7 @@ class SalaryController extends Controller
         //         ->join('grade', 'users.grade', '=', 'grade.name_grade')
         //         ->select('salary_months.*', 'salary_years.*', 'users.*', 'grade.*', 'salary_months.date as salary_month_date','salary_months.id as salary_month_id')
         //         ->get();
+
 
         $salary_months = SalaryMonth::all();
 
@@ -51,7 +53,6 @@ class SalaryController extends Controller
         $selectedStatus = trim(request()->input('filter_status', ''));
         $selectedApprove = trim(request()->input('filter_approval', ''));
 
-        // dd($selectedYear, $selectedMonth, $selectedStatus, $selectedApprove);
 
         $selectedYear = (int) $selectedYear;
         $selectedMonth = (int) $selectedMonth;
@@ -94,7 +95,6 @@ class SalaryController extends Controller
                         ->where('users.active', 'yes')
                         ->get();
                 }
-
             } else {
                 if ($selectedApprove == 1) {
                     $data = DB::table('salary_months')
@@ -117,7 +117,7 @@ class SalaryController extends Controller
                         ->where('users.status', $selectedStatus)
                         ->whereYear('salary_months.date', $selectedYear)
                         ->whereMonth('salary_months.date', $selectedMonth)
-                        ->where('salary_months.is_approved', 0)
+                        // ->where('salary_months.is_approved', 0)
                         ->where('users.active', 'yes')
                         ->get();
                 }
@@ -1060,10 +1060,7 @@ class SalaryController extends Controller
                 DB::raw('MONTH(salary_months.date) as month')
             )
             ->whereYear('salary_months.date', $currentYear)
-            // ->whereMonth('salary_months.date', $notCurrentMonth)
             ->get();
-
-        // dd($rawData);
 
         $rawData->transform(function ($item) {
             $phone = preg_replace('/[^0-9]/', '', $item->no_telpon);

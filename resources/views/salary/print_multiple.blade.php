@@ -310,27 +310,30 @@
                             <tr>
                                 <td>Jamsostek JKK</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['total'] * 0.0054, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['total'] * 0.0054, 0, ',', '.') }}
+                                </td> --}}
+                                <td class="text-end">0</td>
                             </tr>
                             <tr>
                                 <td>Jamsostek JKM</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['total'] * 0.003, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['total'] * 0.003, 0, ',', '.') }}
+                                </td> --}}
+                                <td class="text-end">0</td>
                             </tr>
                             <tr>
                                 <td>Jamsostek JHT</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['total'] * 0.037, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['total'] * 0.037, 0, ',', '.') }}
+                                </td> --}}
+                                <td class="text-end">0</td>
                             </tr>
                             <tr>
                                 <td>Tax PPh 21</td>
                                 <td>:</td>
                                 {{-- <td class="text-end">{{ number_format($data['sal']->pph21_ben, 0, ',', '.') }}
                                 </td> --}}
-                                <td>0</td>
+                                <td class="text-end">0</td>
                             </tr>
                             <tr class="top-border">
                                 <td><b>Sub Total</b></td>
@@ -347,27 +350,30 @@
                             <tr>
                                 <td>Jamsostek JKK</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['total'] * 0.0054, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['total'] * 0.0054, 0, ',', '.') }}
+                                </td> --}}
+                                <td class="text-end">0</td>
                             </tr>
                             <tr>
                                 <td>Jamsostek JKM</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['total'] * 0.003, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['total'] * 0.003, 0, ',', '.') }}
+                                </td> --}}
+                                <td class="text-end">0</td>
                             </tr>
                             <tr>
                                 <td>Jamsostek JHT</td>
                                 <td>:</td>
-                                <td class="text-end">{{ number_format($data['total'] * 0.037, 0, ',', '.') }}
-                                </td>
+                                {{-- <td class="text-end">{{ number_format($data['total'] * 0.037, 0, ',', '.') }}
+                                </td> --}}
+                                <td class="text-end">0</td>
                             </tr>
                             <tr>
                                 <td>Tax PPh 21</td>
                                 <td>:</td>
                                 {{-- <td class="text-end">{{ number_format($data['sal']->pph21_deb, 0, ',', '.') }}
                                 </td> --}}
-                                <td>0</td>
+                                <td class="text-end">0</td>
                             </tr>
                             <tr class="top-border">
                                 <td><b>Sub Total</b></td>

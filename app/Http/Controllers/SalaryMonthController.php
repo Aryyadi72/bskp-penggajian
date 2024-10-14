@@ -420,23 +420,10 @@ class SalaryMonthController extends Controller
             $other = $request->has('other.' . $id) ? (int) str_replace(',', '', $request->input('other.' . $id)) : 0;
             $total_ben_ded = $request->has('total_ben_ded.' . $id) ? (int) str_replace(',', '', $request->input('total_ben_ded.' . $id)) : 0;
 
-            // Hitungan untuk mencari totalan
-            // $total_overtime = (($rate_salary + $ability) / 173) * $hour_call;
-
             $gross_sal = $rate_salary + $ability + $fungtional_alw + $family_alw + $transport_alw + $skill_alw + $telephone_alw + $adjustment + $total_overtime + $thr + $bonus + $incentive;
-
             $total_deduction = $bpjs + $jamsostek + $union + $absent + $electricity + $cooperative + $pinjaman + $other;
-
-            // dd($bpjs, $jamsostek, $union, $absent, $electricity, $cooperative, $pinjaman, $other);
-
             $gaji_bersih = $gross_sal - ($bpjs + $jamsostek + $union + $absent + $electricity + $pinjaman + $other);
-
-            // $net_salary = $gross_sal - $total_deduction;
-
             $net_salary = $gaji_bersih - $cooperative;
-
-            // dd($net_salary);
-
 
             // $allocations = $request->input('allocation.' . $id) ?? NULL;
             // if ($allocations) {
@@ -444,8 +431,6 @@ class SalaryMonthController extends Controller
             // } else {
             //     $allocationJson = $allocations;
             // }
-
-            // dd($gross_sal, $total_deduction, $net_salary);
 
             $update = SalaryMonth::where('id', $id)->update([
                 'hour_call' => $request->input('hour_call.' . $id),

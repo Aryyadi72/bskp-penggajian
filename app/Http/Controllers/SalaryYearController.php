@@ -50,7 +50,7 @@ class SalaryYearController extends Controller
                     ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
                     ->select('users.nik', 'users.name', 'users.status', 'users.dept', 'users.jabatan', 'grade.name_grade',
                             'grade.rate_salary', 'salary_years.*', 'salary_years.id as salary_year_id')
-                    ->whereYear('salary_years.year', $selectedYear)
+                    ->where('salary_years.year', $selectedYear)
                     ->where('users.active', 'yes')
                     ->get();
             } else {
@@ -60,7 +60,17 @@ class SalaryYearController extends Controller
                     ->select('users.nik', 'users.name', 'users.status', 'users.dept', 'users.jabatan', 'grade.name_grade',
                             'grade.rate_salary', 'salary_years.*', 'salary_years.id as salary_year_id')
                     ->where('users.status', $selectedStatus)
-                    ->whereYear('salary_years.year', $selectedYear)
+                    ->where('salary_years.year', $selectedYear)
+                    ->where('users.active', 'yes')
+                    ->get();
+
+                $data = DB::table('salary_years')
+                    ->join('users', 'salary_years.nik', '=', 'users.nik')
+                    ->join('grade', 'salary_years.id_salary_grade', '=', 'grade.id')
+                    ->select('users.nik', 'users.name', 'users.status', 'users.dept', 'users.jabatan', 'grade.name_grade',
+                            'grade.rate_salary', 'salary_years.*', 'salary_years.id as salary_year_id')
+                    ->where('users.status', $selectedStatus)
+                    ->where('salary_years.year', $selectedYear)
                     ->where('users.active', 'yes')
                     ->get();
             }
@@ -222,7 +232,6 @@ class SalaryYearController extends Controller
             $skill_alw = isset($input['skill_alw'][$key]) ? (int) str_replace(',', '', $input['skill_alw'][$key]) : 0;
             $adjustment = isset($input['adjustment'][$key]) ? (int) str_replace(',', '', $input['adjustment'][$key]) : 0;
 
-            // $total = $rate_salary + $ability + $family_alw;
             $totalBpjs = $rate_salary + $ability + $family_alw + $fungtional_alw + $skill_alw + $telephone_alw;
             $totalJamsostek = $rate_salary + $ability + $family_alw + $skill_alw + $fungtional_alw + $telephone_alw;
 
@@ -321,16 +330,12 @@ class SalaryYearController extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->input('id_grade'));
         foreach ($request->input('ids') as $id) {
 
             $input = $request->only([
                 'id_grade', 'rate_salary', 'ability', 'fungtional_alw', 'family_alw',
                 'transport_alw', 'telephone_alw', 'skill_alw', 'adjustment', 'id_user'
             ]);
-
-            // $id_grade = $request->has('id_grade.' . $id) ? (int) str_replace(',', '', $request->input('id_grade.' . $id)) : 0;
-            // $rate_salary = $request->has('rate_salary.' . $id) ? (int) str_replace(',', '', $request->input('rate_salary.' . $id)) : 0;
 
             $id_user = $input['id_user'][$id] ?? 0;
             $id_grade = $input['id_grade'][$id] ?? 0;
@@ -354,16 +359,6 @@ class SalaryYearController extends Controller
                 $bpjs = $totalBpjsCal * 0.01;
             }
 
-            // $total = $rate_salary + $ability + $fungtional_alw + $family_alw + $transport_alw + $telephone_alw + $skill_alw;
-            // if ($total2 > 12000000) {
-            //     $bpjs2 = 12000000 * 0.01;
-            // } else {
-            //     $bpjs2 = $total2 * 0.01;
-            // }
-
-            // dd($total, $total2, $bpjs, $bpjs2);
-
-
             $jamsostek = $totalJamsostek * 0.02;
 
             $jamsostek_jkk = $totalJamsostek * 0.0054;
@@ -378,21 +373,43 @@ class SalaryYearController extends Controller
                 $allocationJson = $allocations;
             }
 
-            $updateSalaryYear = SalaryYear::where('id', $id)->update([
-                'id_salary_grade' => $id_grade,
-                'ability' => $ability,
-                'fungtional_alw' => $fungtional_alw,
-                'family_alw' => $family_alw,
-                'transport_alw' => $transport_alw,
-                'telephone_alw' => $telephone_alw,
-                'skill_alw' => $skill_alw,
-                'adjustment' => $adjustment,
-                'bpjs' => $bpjs,
-                'jamsostek' => $jamsostek,
-                'total_ben' => $total_jamsostek,
-                'total_ben_ded' => $total_jamsostek,
-                'allocation' => $allocationJson,
-            ]);
+            $checkStatuses = User::where('nik', $id_user)->first();
+
+            if ($checkStatuses->status == "Contract BSKP") {
+                $updateSalaryYear = SalaryYear::where('id', $id)->update([
+                    'id_salary_grade' => $id_grade,
+                    'ability' => $ability,
+                    'fungtional_alw' => $fungtional_alw,
+                    'family_alw' => $family_alw,
+                    'transport_alw' => $transport_alw,
+                    'telephone_alw' => $telephone_alw,
+                    'skill_alw' => $skill_alw,
+                    'adjustment' => $adjustment,
+                    'bpjs' => $bpjs,
+                    'jamsostek' => 0,
+                    'total_ben' => 0,
+                    'total_ben_ded' => 0,
+                    'allocation' => $allocationJson,
+                ]);
+            } else {
+                $updateSalaryYear = SalaryYear::where('id', $id)->update([
+                    'id_salary_grade' => $id_grade,
+                    'ability' => $ability,
+                    'fungtional_alw' => $fungtional_alw,
+                    'family_alw' => $family_alw,
+                    'transport_alw' => $transport_alw,
+                    'telephone_alw' => $telephone_alw,
+                    'skill_alw' => $skill_alw,
+                    'adjustment' => $adjustment,
+                    'bpjs' => $bpjs,
+                    'jamsostek' => $jamsostek,
+                    'total_ben' => $total_jamsostek,
+                    'total_ben_ded' => $total_jamsostek,
+                    'allocation' => $allocationJson,
+                ]);
+            }
+
+
 
             if ($updateSalaryYear) {
                 User::where('nik', $id_user)->update([

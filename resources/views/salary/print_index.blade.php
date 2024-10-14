@@ -24,7 +24,7 @@
                                 </button>
                             </div>
                             <div class="col-5 justify-content-end">
-                                <form action="{{ url('/salary') }}" method="GET">
+                                <form action="{{ url('/print-index') }}" method="GET">
                                     <div class="row">
                                         <div class="col pe-0">
                                             <select class="form-select form-select-sm" name="filter_status">

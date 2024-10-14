@@ -82,14 +82,14 @@
                                     <span class="btn-inner--text">Approved Selected</span>
                                 </button> --}}
                                 <table
-                                    class="table table-sm table-striped table-hover dtTable200 align-items-center small-tbl compact"
+                                    class="table table-sm table-striped table-hover dtTable100 align-items-center small-tbl compact"
                                     id="example">
                                     <thead class="bg-thead">
                                         <tr>
-                                            <th rowspan="2" class="text-center"
+                                            {{-- <th rowspan="2" class="text-center"
                                                 style="background-color: #1A73E8;color: white; p-0">
                                                 <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)">
-                                            </th>
+                                            </th> --}}
                                             <th colspan="7" class="text-center p-0">Employee Identity</th>
                                             <th colspan="13" class="text-center p-0">Salary Components</th>
                                             <th rowspan="2" class="text-center">Bruto Salary</th>
@@ -136,11 +136,11 @@
                                     <tbody>
                                         @foreach ($data as $key => $sal)
                                             <tr>
-                                                <td class="text-center">
+                                                {{-- <td class="text-center">
                                                     <input type="checkbox" name="salary_ids[]"
                                                         value="{{ $sal->salary_month_id }}" class="selectItem"
                                                         onclick="togglePrintButton()">
-                                                </td>
+                                                </td> --}}
                                                 <td class="text-nowrap text-end">
                                                     <input type="hidden" name="nik[]" value="{{ $sal->nik }}">
                                                     {{ $sal->nik }}
@@ -323,7 +323,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="8" style="background-color: #1A73E8;color: white;"></td>
+                                            <td colspan="7" style="background-color: #1A73E8;color: white;"></td>
                                             <td class="text-end">{{ number_format($totalRateSalary, 0, ',', '.') }}
                                             </td>
                                             <td class="text-end">{{ number_format($totalAbility, 0, ',', '.') }}</td>
