@@ -12,8 +12,14 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->query('token')) {
+            $token = $request->query('token');
+            $request->session()->put('jwt_token', $token);
+        }
+
+        $token = $request->query('token');
         // $statuses = User::select('status')->where('status', 'Manager')->groupBy('status')->pluck('status')->count();
         $managerCount = User::where('status', 'Manager')->count();
         $staffCount = User::where('status', 'Staff')->count();

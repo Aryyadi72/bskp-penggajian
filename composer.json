@@ -14,6 +14,7 @@
         "maatwebsite/excel": "^3.1",
         "symfony/console": "^6.4",
         "twilio/sdk": "^8.2",
+        "tymon/jwt-auth": "^2.1",
         "waapi/waapi-laravel-sdk": "^1.0",
         "yajra/laravel-datatables-oracle": "^10.11"
     },

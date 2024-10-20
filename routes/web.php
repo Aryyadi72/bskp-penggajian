@@ -12,6 +12,7 @@ use App\Http\Controllers\SalaryYearController;
 use App\Http\Controllers\SalaryMonthController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\WhatsAppController;
+use App\Http\Controllers\SomeController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+// Route::middleware(['jwt.verify'])->group(function () {
+//     Route::get('/protected-route', [SomeController::class, 'someProtectedMethod']);
+// });
+
+Route::group(['middleware' => ['jwt.verify']], function () {
+    // Rute lainnya
+    Route::get('/historical', [SalaryController::class, 'historical'])->name('historical');
+});
 
 // DashboardController
 // -------------------------------------------------------------------
@@ -100,7 +110,7 @@ Route::post('/is-checked', [SalaryController::class, 'salary_check'])->name('sal
 Route::post('/is-approved', [SalaryController::class, 'salary_approved'])->name('salary-approved');
 Route::get('/summary', [SalaryController::class, 'summary'])->name('summary');
 Route::get('/result', [SalaryController::class, 'result'])->name('result');
-Route::get('/historical', [SalaryController::class, 'historical'])->name('historical');
+// Route::get('/historical', [SalaryController::class, 'historical'])->name('historical');
 Route::get('/historical/{id}', [SalaryController::class, 'historical_detail'])->name('historical-detail');
 
 // Print Salary Data
