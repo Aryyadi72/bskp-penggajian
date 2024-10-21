@@ -1293,8 +1293,9 @@ class SalaryController extends Controller
         return view('salary.result', compact('title', 'empFilter', 'yearFilter', 'data', 'name'));
     }
 
-    public function historical()
+    public function historical(Request $request)
     {
+        $roles = $request->get('roles');
         $title = 'Summary Historical Grade';
 
         $currentYear = Carbon::now()->year;
@@ -1363,7 +1364,12 @@ class SalaryController extends Controller
             }
         }
 
-        return view('salary.historical', ['data' => $groupedData, 'title' => $title, 'years' => $years]);
+        return view('salary.historical', [
+            'data' => $groupedData,
+            'title' => $title,
+            'years' => $years,
+            'roles' => $roles
+        ]);
     }
 
     public function historical_detail($id)

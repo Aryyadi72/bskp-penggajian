@@ -14,6 +14,8 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+        $roles = $request->get('roles');
+        // dd($roles);
         if ($request->query('token')) {
             $token = $request->query('token');
             $request->session()->put('jwt_token', $token);
@@ -35,7 +37,8 @@ class DashboardController extends Controller
             'monthlyCount' => $monthlyCount,
             'regularCount' => $regularCount,
             'contractBskpCount' => $contractBskpCount,
-            'contractFlCount' => $contractFlCount
+            'contractFlCount' => $contractFlCount,
+            'roles' => $roles
         ]);
     }
 

@@ -19,27 +19,14 @@ class ValidateSalary
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            // $token = $request->bearerToken();
             $token = $request->query('token');
 
-            // dd($token);
-
-        // Debug token
-        Log::info('Received Token: ' . $token);
-
-            // Verifikasi token
             if (!$token || !JWTAuth::setToken($token)->check()) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
 
-            // Ambil payload dari token
             $payload = JWTAuth::setToken($token)->getPayload();
-            $roles = $payload['roles']; // Ambil roles
-
-            // Cek apakah user adalah admin
-            if (!in_array('Admin', $roles)) {
-                return response()->json(['error' => 'Forbidden'], 403);
-            }
+            $request->merge(['roles' => $payload['roles']]);
 
         } catch (JWTException $e) {
             return response()->json(['error' => 'Token invalid'], 401);

@@ -11,6 +11,7 @@ class OvertimeApproved extends Model
 
     protected $fillable = [
         'nik',
+        'hour_og',
         'hour_call',
         'overtime_call',
         'overtime_date',

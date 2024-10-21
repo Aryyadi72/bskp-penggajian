@@ -15,7 +15,7 @@
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h3 class="text-white text-capitalize ps-3">{{ $title }}</h3>
+                            <h5 class="text-white text-capitalize ps-3">{{ $title }}</h5>
                         </div>
                     </div>
 
@@ -23,22 +23,40 @@
                         <div class="card-body p-3 pb-2">
                             <div class="row">
                                 <div class="col-7">
-                                    <table class="table table-bordered" style="width: 50px; height: 10px;">
-                                        <thead>
-                                            <tr>
-                                                <th>Group</th>
-                                                <th> : </th>
-                                                <th></th>
+                                    <table style="border: 3px solid black; border-collapse: collapse;">
+                                        <thead style="border: 3px solid black; border-collapse: collapse;">
+                                            <tr style="border: 3px solid black; border-collapse: collapse;">
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                    Group</th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse;  padding: 5px;">
+                                                    : </th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th>Date</th>
-                                                <th> : </th>
-                                                <th>{{ \Carbon\Carbon::parse($dateYesterday)->format('d-m-Y') }}</th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                    Date</th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse;  padding: 5px;">
+                                                    : </th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                    {{ \Carbon\Carbon::parse($dateYesterday)->format('l, d-m-Y') }}</th>
                                             </tr>
                                             <tr>
-                                                <th>Dept</th>
-                                                <th> : </th>
-                                                <th></th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                    Dept</th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                    : </th>
+                                                <th
+                                                    style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                </th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -71,9 +89,9 @@
                             @if (isset($dataGabunganGrouped) && $dataGabunganGrouped->isNotEmpty())
                                 @foreach ($dataGabunganGrouped as $status => $items)
                                     <div class="my-4">
-                                        <h4 class="bg-info text-white p-2 rounded">Status: {{ $status }}</h4>
+                                        <h6>Status: {{ $status }}</h6>
                                         <table
-                                            class="table table-sm table-striped table-hover align-items-center compact small-tbl dtTable3">
+                                            class="table table-sm table-striped table-hover align-items-center compact small-tbl dtTable2">
                                             <thead class="bg-thead">
                                                 <tr>
                                                     <th rowspan="2" class="text-center"
@@ -87,12 +105,13 @@
                                                     <th rowspan="2" class="text-center">Dept</th>
                                                     <th rowspan="2" class="text-center">Status</th>
                                                     <th rowspan="2" class="text-center">Jabatan</th>
-                                                    <th colspan="4" class="text-center">Overtime</th>
-                                                    <th rowspan="2" class="text-center">Approve</th>
+                                                    <th colspan="3" class="text-center">Overtime</th>
+                                                    {{-- <th rowspan="2" class="text-center">Approve</th> --}}
                                                 </tr>
                                                 <tr>
-                                                    <th class="text-center">Jam</th>
-                                                    <th class="text-center">Menit</th>
+                                                    <th class="text-center">OG</th>
+                                                    {{-- <th class="text-center">Jam</th> --}}
+                                                    {{-- <th class="text-center">Menit</th> --}}
                                                     <th class="text-center">OT (Cal)</th>
                                                     <th class="text-center">Kalkulasi</th>
                                                 </tr>
@@ -125,10 +144,16 @@
                                                         <td>{{ $item['dept'] ?? 'Dept tidak ditemukan' }}</td>
                                                         <td>{{ $item['status'] ?? 'Status tidak ditemukan' }}</td>
                                                         <td>{{ $item['jabatan'] ?? 'Jabatan tidak ditemukan' }}</td>
-                                                        <td class="text-center">{{ $overtime_hour }}</td>
-                                                        <td class="text-center">{{ $overtime_minute }}</td>
+                                                        <td class="text-center">
+                                                            {{ number_format($item['total_minutes_in_decimal'], 2) }}
+                                                        </td>
+                                                        {{-- <td class="text-center">{{ $overtime_hour }}</td> --}}
+                                                        {{-- <td class="text-center">{{ $overtime_minute }}</td> --}}
                                                         {{-- <td class="text-center">{{ $overtime_hour_after_cal }}</td> --}}
                                                         {{-- <td class="text-center">{{ number_format($totalOvertime) }}</td> --}}
+                                                        <input type="hidden"
+                                                            name="original_overtime[{{ $item['user_id'] }}]"
+                                                            value="{{ number_format($item['total_minutes_in_decimal'], 2) }}">
                                                         <td class="text-center">
                                                             <input type="number"
                                                                 name="adjust_ot_call[{{ $item['user_id'] }}]"
@@ -145,13 +170,13 @@
                                                                 value="{{ number_format($totalOvertime, 2) }}" readonly
                                                                 style="width: 70px;">
                                                         </td>
-                                                        <td class="text-center">
+                                                        {{-- <td class="text-center">
                                                             @if ($isApproved == 'Yes')
                                                                 <span class="sent">✓</span>
                                                             @else
                                                                 <span class="not-sent">✗</span>
                                                             @endif
-                                                        </td>
+                                                        </td> --}}
                                                     </tr>
                                                 @endforeach
                                             </tbody>

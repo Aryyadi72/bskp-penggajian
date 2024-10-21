@@ -33,13 +33,13 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::group(['middleware' => ['jwt.verify']], function () {
-    // Rute lainnya
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/historical', [SalaryController::class, 'historical'])->name('historical');
 });
 
 // DashboardController
 // -------------------------------------------------------------------
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+// Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::resource('user', UserController::class);
 // -------------------------------------------------------------------
 

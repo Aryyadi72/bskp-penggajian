@@ -6,8 +6,8 @@
                 <!-- Manager Table -->
                 <div class="pb-1">
                     <div class="p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                            <h3 class="text-white text-capitalize ps-3">{{ $title }}</h3>
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-1">
+                            <h4 class="text-white text-capitalize ps-3">{{ $title }}</h4>
                         </div>
                     </div>
                 </div>

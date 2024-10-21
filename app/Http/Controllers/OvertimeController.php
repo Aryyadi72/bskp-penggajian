@@ -50,10 +50,8 @@ class OvertimeController extends Controller
                     DB::raw('IF(overtime_approveds.id IS NOT NULL, 1, 0) as is_approved')
                 )
                 ->whereNotNull('test_absen_regs.overtime_minute')
-                // ->where('test_absen_regs.overtime_hour', '!=', 0)
                 ->where('test_absen_regs.overtime_minute', '!=', 0)
                 ->where('test_absen_regs.date', $dateYesterday)
-                // ->where('users.nik', '217-002')
                 ->get();
         } else {
             $dateYesterday = request()->input('date', '');
@@ -82,10 +80,8 @@ class OvertimeController extends Controller
                     DB::raw('IF(overtime_approveds.id IS NOT NULL, 1, 0) as is_approved')
                 )
                 ->whereNotNull('test_absen_regs.overtime_minute')
-                // ->where('test_absen_regs.overtime_hour', '!=', 0)
                 ->where('test_absen_regs.overtime_minute', '!=', 0)
                 ->where('test_absen_regs.date', $dateYesterday)
-                // ->where('users.nik', '217-002')
                 ->get();
         }
 
@@ -93,6 +89,9 @@ class OvertimeController extends Controller
             $item = (array) $item;
 
             $totalMinutes = ($item['overtime_hour'] * 60) + $item['overtime_minute'];
+
+            $totalMinutesInDecimal = ($totalMinutes / 60);
+            $item['total_minutes_in_decimal'] = $totalMinutesInDecimal;
 
             if ($totalMinutes <= 30) {
                 $overtimeHourInDecimal = 0;
@@ -106,17 +105,10 @@ class OvertimeController extends Controller
                 $overtimeHourInDecimal = floor($totalMinutes / 60) + ($totalMinutes % 60 > 30 ? 0.5 : 0);
             }
 
-            // dd($overtimeHourInDecimal);
 
             if ($overtimeHourInDecimal == 0) {
                 return null;  // Item ini tidak akan ditampilkan
             }
-
-            // if (isset($item['desc']) && in_array($item['desc'], ['MX'])) {
-            //     $item['overtime_hour_after_cal'] = $item['overtime_hour'] * 2;
-            // } else {
-            //     $item['overtime_hour_after_cal'] = ($item['overtime_hour'] * 2) - 0.5;
-            // }
 
             if (isset($item['desc']) && in_array($item['desc'], ['MX'])) {
                 $item['overtime_hour_after_cal'] = $overtimeHourInDecimal * 2;
@@ -234,6 +226,7 @@ class OvertimeController extends Controller
                 'users.jabatan',
                 'users.overtime_limit',
                 'overtime_approveds.overtime_date',
+                'overtime_approveds.hour_og',
                 'overtime_approveds.hour_call',
                 'salary_years.ability',
                 'grade.rate_salary',
@@ -279,11 +272,14 @@ class OvertimeController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         if ($request->has('user_id')) {
             $userIds = $request->input('user_id');
             $overtimeHours = $request->input('overtime_hour_after_cal');
             $totalOvertimes = $request->input('totalOvertime');
             $dates = $request->input('tanggal');
+            $adjustOtCall = $request->input('adjust_ot_call');
+            $originalOvertime = $request->input('original_overtime');
 
             foreach ($userIds as $index => $userId) {
                 $overtimeHour = $overtimeHours[$index];
@@ -295,6 +291,7 @@ class OvertimeController extends Controller
                         'overtime_date' => $dates,
                     ],
                     [
+                        'hour_og' => $originalOvertime,
                         'hour_call' => $overtimeHour,
                         'overtime_call' => $totalOvertime,
                     ]

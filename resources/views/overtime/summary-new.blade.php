@@ -1,55 +1,52 @@
 @extends('layouts.main')
 @section('content')
     <style>
-        /* Styling untuk header hari libur */
         th.holiday-header {
             background-color: #ffcccc !important;
-            /* Warna merah muda */
             color: #000 !important;
-            /* Warna teks hitam untuk keterbacaan */
         }
 
         th.holiday-header:hover {
             background-color: #ffcccc !important;
-            /* Tetap merah muda saat hover */
         }
-
-        /* Mengatur ukuran kolom agar tidak terlalu lebar */
-        /* th,
-            td {
-                min-width: 60px;
-                max-width: 80px;
-                white-space: nowrap;
-            } */
     </style>
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-1">
                             <h3 class="text-white text-capitalize ps-3">{{ $title }}</h3>
                         </div>
                     </div>
                     <div class="card-body p-3 pb-2">
                         <div class="row">
                             <div class="col-9">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Group</th>
-                                            <th> : </th>
-                                            <th></th>
+                                <table style="border: 3px solid black; border-collapse: collapse;">
+                                    <thead style="border: 3px solid black; border-collapse: collapse;">
+                                        <tr style="border: 3px solid black; border-collapse: collapse;">
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                Group</th>
+                                            <th style="border: 3px solid black; border-collapse: collapse;  padding: 5px;">
+                                                : </th>
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                            </th>
                                         </tr>
                                         <tr>
-                                            <th>Dept</th>
-                                            <th> : </th>
-                                            <th></th>
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                Date</th>
+                                            <th style="border: 3px solid black; border-collapse: collapse;  padding: 5px;">
+                                                : </th>
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                {{ $formattedMonth }}</th>
                                         </tr>
                                         <tr>
-                                            <th>Month</th>
-                                            <th> : </th>
-                                            <th>{{ $formattedMonth }}</th>
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                Dept</th>
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                                : </th>
+                                            <th style="border: 3px solid black; border-collapse: collapse; padding: 5px;">
+                                            </th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -84,7 +81,8 @@
                                             <th>Status</th>
                                             <th>Jabatan</th>
                                             <th>Batas Lembur (Og)</th>
-                                            <th>Batas Lembur (Cal)</th>
+                                            <th>Jam Lembur (Og)</th>
+                                            {{-- <th>Batas Lembur (Cal)</th> --}}
                                             @foreach ($dates as $dateInfo)
                                                 <th class="{{ $dateInfo['isHoliday'] ? 'holiday-header' : '' }}">
                                                     <div class="d-flex flex-column align-items-center">
@@ -135,7 +133,9 @@
                                                 <td>{{ $firstRecord->status }}</td>
                                                 <td>{{ $firstRecord->jabatan }}</td>
                                                 <td>{{ $firstRecord->overtime_limit ?? '0' }} Jam</td>
-                                                <td>{{ $otlimit * 2 }} Jam</td>
+                                                {{-- <td>{{ $otlimit * 2 }} Jam</td> --}}
+                                                {{-- <td>{{ $firstRecord->hour_og }}</td> --}}
+                                                <td>10</td>
                                                 @foreach ($dates as $dateInfo)
                                                     <td class="text-center p-0">
                                                         {{ $records->firstWhere('overtime_date', $dateInfo['date'])?->hour_call ?? 0 }}
